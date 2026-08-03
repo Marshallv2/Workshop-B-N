@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanalstandard – HTML Workshop</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-muted: #6b7280;
+      --accent: #16a34a;
+      --accent-soft: #dcfce7;
+      --border: #e5e7eb;
+      --table-dark: #0f0f0f;
+      --table-header: #d1d5db;
+      --table-row-alt: #1a1a1a;
+      --note-dark: #1c1917;
+      --note-accent: #f97316;
+      --teal: #0d9488;
+      --sidebar-width: 260px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    nav.sidebar {
+      width: var(--sidebar-width);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    nav.sidebar h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin: 0 0 0.75rem;
+    }
+
+    nav.sidebar a {
+      display: block;
+      padding: 0.45rem 0.65rem;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      margin-bottom: 2px;
+    }
+
+    nav.sidebar a:hover { background: var(--bg); }
+    nav.sidebar a.active { background: var(--accent-soft); color: #166534; font-weight: 600; }
+
+    main {
+      flex: 1;
+      padding: 2rem 2.5rem 4rem;
+      max-width: 1200px;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 1rem;
+    }
+
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 0.35rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .stat-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .note-box {
+      background: var(--note-dark);
+      color: #e7e5e4;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--note-accent);
+    }
+
+    .note-box strong { color: var(--note-accent); }
+
+    .note-box.teal {
+      border-left-color: var(--teal);
+    }
+
+    .note-box.teal strong { color: #5eead4; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .gallery-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .gallery-card .meta {
+      padding: 0.75rem 1rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .gallery-card .placeholder-img {
+      height: 160px;
+      background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 0.8rem;
+    }
+
+    .gallery-card h3 {
+      font-size: 0.95rem;
+      margin: 0.75rem 1rem 0.35rem;
+    }
+
+    .gallery-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0 1rem 1rem;
+    }
+
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    table.data-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    table.data-table th {
+      background: var(--table-header);
+      color: var(--text);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.55rem 0.5rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.data-table tbody {
+      background: var(--table-dark);
+    }
+
+    table.data-table td {
+      padding: 0.4rem 0.5rem;
+      color: #e5e7eb;
+      border-bottom: 1px solid #2d2d2d;
+      vertical-align: middle;
+    }
+
+    table.data-table tbody tr:hover td { background: #262626; }
+    table.data-table tbody tr.selected td {
+      background: #000;
+      color: #fff;
+    }
+
+    table.data-table .col-name { min-width: 200px; font-family: ui-monospace, monospace; font-size: 0.72rem; }
+    table.data-table .col-icon { text-align: center; width: 36px; color: #9ca3af; }
+    table.data-table .col-plotstil { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .icon-cell { font-size: 0.85rem; opacity: 0.7; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      font-size: 0.68rem;
+      color: #d1d5db;
+      background: transparent;
+    }
+
+    .badge.entw { border-color: #0d9488; color: #5eead4; }
+    .badge.gp { border-color: #6b7280; }
+    .badge.lev { border-color: #22c55e; color: #86efac; }
+    .badge.mark { border-color: #a3a3a3; }
+    .badge.vers { border-color: #16a34a; color: #86efac; }
+    .badge.zaun { border-color: #14b8a6; color: #5eead4; }
+    .badge.sonstige { border-color: #64748b; color: #94a3b8; }
+    .badge.hoehen { border-color: #8b5cf6; color: #c4b5fd; }
+
+    .line-preview {
+      display: block;
+      width: 100%;
+      min-width: 120px;
+      height: 20px;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .color-card {
+      background: var(--table-dark);
+      border-radius: 12px;
+      padding: 1.25rem;
+      color: #e5e7eb;
+    }
+
+    .color-swatch {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 1px solid #404040;
+    }
+
+    .color-card h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .color-card p { margin: 0.25rem 0; font-size: 0.85rem; color: #a3a3a3; }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .checklist li {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .checklist li strong { color: #b45309; }
+
+    .prompt-box {
+      background: #292524;
+      color: #e7e5e4;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .prompt-box .section-title {
+      color: #5eead4;
+      font-weight: 700;
+      margin-top: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .prompt-box .section-title:first-child { margin-top: 0; }
+
+    footer.doc-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .layout { flex-direction: column; }
+      nav.sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      main { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Inhaltsverzeichnis">
+      <h2>Workshop</h2>
+      <a href="#layer-manager">12 Layer-Manager</a>
+      <a href="#linientypkatalog">13 Linientypkatalog</a>
+      <a href="#farbenkatalog">14 Farbenkatalog</a>
+      <a href="#pruefpunkte">15 Prüfpunkte</a>
+      <a href="#din">16 DIN 1356-1</a>
+      <a href="#master-prompt">17 Master-Prompt</a>
+    </nav>
+
+    <main>
+      <header style="margin-bottom: 2rem;">
+        <h1>Kanalstandard – HTML Workshop</h1>
+        <p class="subtitle">Vollständige Informationsaufnahme · eingebettete Referenzstrukturen · Layerliste · offene Entscheidungen gekennzeichnet</p>
+      </header>
+
+      <!-- Section 12: Layer Manager -->
+      <section id="layer-manager" class="section">
+        <div class="section-num">12</div>
+        <h1>Vollständiger Layer-Manager</h1>
+        <p class="subtitle">Sämtliche 66 Datensätze aus der XLSX-Datei, einschließlich unveränderter Schreibweisen und leerer Felder.</p>
+
+        <div class="stats" id="layer-stats">
+          <div class="stat-card"><div class="value" id="stat-bkan">42</div><div class="label">BKAN-Datensätze</div></div>
+          <div class="stat-card"><div class="value" id="stat-bver">22</div><div class="label">BVER-Datensätze</div></div>
+          <div class="stat-card"><div class="value" id="stat-other">2</div><div class="label">sonstige Datensätze</div></div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table class="data-table" id="layer-table">
+              <thead>
+                <tr>
+                  <th>Nr.</th>
+                  <th>Name</th>
+                  <th>Ein</th>
+                  <th>Frieren</th>
+                  <th>Sperre</th>
+                  <th>Plot</th>
+                  <th>Farbe</th>
+                  <th>Linientyp</th>
+                  <th>Linienstärke</th>
+                  <th>Beschreibung</th>
+                  <th>Transparenz</th>
+                  <th>Frieren in neuen Ansichtsfenstern</th>
+                  <th>Plotstil</th>
+                </tr>
+              </thead>
+              <tbody id="layer-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 13: Linetype Catalog -->
+      <section id="linientypkatalog" class="section">
+        <div class="section-num">13</div>
+        <h1>Linientypkatalog</h1>
+        <p class="subtitle">Vollständige Aufnahme der zusätzlich bereitgestellten Linientypen einschließlich Darstellung und Beschreibung.</p>
+
+        <div class="stats">
+          <div class="stat-card"><div class="value">87</div><div class="label">Linientypen vollständig aufgenommen</div></div>
+          <div class="stat-card"><div class="value">3</div><div class="label">Original-Screenshots des Linientyp-Managers</div></div>
+          <div class="stat-card"><div class="value">1:1</div><div class="label">Schreibweisen aus der Vorlage bewahrt</div></div>
+        </div>
+
+        <div class="note-box">
+          <strong>Hinweis zur Darstellung</strong><br>
+          Die Zeichenketten in den Tabellen sind textuelle Annäherungen der AutoCAD-Vorschau. Für die tatsächlichen Linienmuster sind die eingebetteten Screenshots und die AutoCAD-Definitionen maßgeblich.
+        </div>
+
+        <div class="gallery">
+          <div class="gallery-card">
+            <div class="meta">ORIGINALBILD 125 · IMAGE(125).PNG</div>
+            <div class="placeholder-img">Linientyp-Manager – oberer Bereich</div>
+            <h3>Linientyp-Manager – oberer Bereich</h3>
+            <p>AutoCAD-Linientyp-Manager mit ENTW- und GP-Linientypen sowie zugehörigen Darstellungen und Beschreibungen.</p>
+          </div>
+          <div class="gallery-card">
+            <div class="meta">ORIGINALBILD 126 · IMAGE(126).PNG</div>
+            <div class="placeholder-img">Linientyp-Manager – mittlerer Bereich</div>
+            <h3>Linientyp-Manager – mittlerer Bereich</h3>
+            <p>Fortsetzung mit Höhenlinien, Kanalanschluss, LEV-, MARK-, Schutz- und VERS-Linientypen.</p>
+          </div>
+          <div class="gallery-card">
+            <div class="meta">ORIGINALBILD 127 · IMAGE(127).PNG</div>
+            <div class="placeholder-img">Linientyp-Manager – unterer Bereich</div>
+            <h3>Linientyp-Manager – unterer Bereich</h3>
+            <p>Unterer Abschluss mit VERS_TELEKOM_M500, Trinkwasser, vorhandener Druckleitung und Zaun-Linientypen.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-scroll" style="max-height: 640px;">
+            <table class="data-table" id="linetype-table">
+              <thead>
+                <tr>
+                  <th>Linientyp</th>
+                  <th>Darstellung</th>
+                  <th>Beschreibung</th>
+                  <th>Gruppe</th>
+                </tr>
+              </thead>
+              <tbody id="linetype-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="note-box teal" style="margin-top: 1rem;">
+          <strong>Bewusst unverändert aufgenommen</strong><br>
+          Dazu gehören unter anderem die getrennten Einträge CONTINUOUS und Continuous, die Bezeichnungen ENTW_Entfaellt; GP_GESTRICHELT 6_1; LEV_Mittelspannung_Fernheizung sowie alle M500-/M1000-Varianten.
+        </div>
+      </section>
+
+      <!-- Section 14: Color Catalog -->
+      <section id="farbenkatalog" class="section">
+        <div class="section-num">14</div>
+        <h1>Farbenkatalog – aktuell dokumentierter Farbwert</h1>
+        <p class="subtitle">Aufnahme der beiden bereitgestellten AutoCAD-Farbauswahl-Screenshots.</p>
+
+        <div class="gallery">
+          <div class="gallery-card">
+            <div class="meta">ORIGINALBILD 128 · IMAGE(128).PNG</div>
+            <div class="placeholder-img">Farbauswahl – Indexfarbe (magenta)</div>
+            <h3>Farbauswahl – AutoCAD-Farbindex</h3>
+            <p>Im Register „Indexfarbe“ ist magenta ausgewählt. Dokumentation der AutoCAD-Farbindex-Palette und sichtbarer Farbbezeichnung.</p>
+          </div>
+          <div class="gallery-card">
+            <div class="meta">ORIGINALBILD 129 · IMAGE(129).PNG</div>
+            <div class="placeholder-img">Farbauswahl – True Color</div>
+            <h3>Farbauswahl – True Color</h3>
+            <p>True-Color-Definition: RGB 255, 0, 255; HSL Farbton 300, Sättigung 100, Helligkeit 50.</p>
+          </div>
+        </div>
+
+        <div class="color-grid">
+          <div class="color-card">
+            <div class="color-swatch" style="background: magenta;"></div>
+            <h3>Indexfarbe</h3>
+            <p><strong>Bezeichnung:</strong> magenta</p>
+            <p>Im Screenshot ist magenta in der AutoCAD-Farbindex-Palette ausgewählt. Eine numerische ACI-Indexnummer ist in der bereitgestellten Abbildung nicht sichtbar und wird deshalb nicht ergänzt.</p>
+          </div>
+          <div class="color-card">
+            <div class="color-swatch" style="background: rgb(255, 0, 255);"></div>
+            <h3>True Color</h3>
+            <p><strong>RGB:</strong> 255, 0, 255 · <code>#FF00FF</code></p>
+            <p><strong>HSL:</strong> Farbton 300, Sättigung 100, Helligkeit 50</p>
+            <p>Farbmodell im Screenshot: HSL; True Color als RGB gespeichert.</p>
+          </div>
+        </div>
+
+        <div class="note-box" style="margin-top: 1.5rem;">
+          <strong>Stand des Farbenkatalogs</strong><br>
+          Die neuen Bilder dokumentieren derzeit konkret die Farbe magenta. Weitere Farben können später in derselben Struktur mit Indexfarbe, RGB-/HSL-Werten, Verwendungszweck und zugeordneten Layern ergänzt werden.
+        </div>
+      </section>
+
+      <!-- Section 15: Checkpoints -->
+      <section id="pruefpunkte" class="section">
+        <div class="section-num">15</div>
+        <h1>Auffälligkeiten und bewusste Prüfpunkte</h1>
+        <p class="subtitle">Keine automatischen Korrekturen – diese Punkte sollten gemeinsam entschieden werden.</p>
+
+        <ul class="checklist">
+          <li><strong>Layer-Naming:</strong> <code>BKAN_LINIE_DRAINAGE_KANAL</code> im Layer-Manager, in Abbildungen teils <code>BKAN_LINE_DRAINAGE_KANAL</code> (LINIE vs. LINE).</li>
+          <li><strong>Gemischte Schreibweisen:</strong> z. B. <code>BKAN_LINIE_M_Haltung</code>, <code>BKAN_LINIE_S_Haltung</code> und weitere Layer mit <code>_KANAL</code>.</li>
+          <li><strong>Planungsabbildungen:</strong> Varianten wie <code>KANPL_LINE_…</code>, <code>KANPL_Linie_…</code> und <code>KANPL_LINIE_…</code>.</li>
+          <li><strong>Schreibfehler:</strong> <code>CONTINIOUS</code> in mehreren BVER-Linientypen – Prüfung ob <code>CONTINUOUS</code> beabsichtigt.</li>
+          <li><strong>Beleuchtungskabel:</strong> <code>BVER_BELEUCHTUNGKABEL</code> und <code>BVER_BELEUCHTUNGKABEL_SCHUTZR</code> – unterschiedliche „S“-Schreibweisen.</li>
+          <li><strong>Bauwerk-Begriffe:</strong> Bestand nutzt <code>SCHACHTBAU</code>, Planungsabbildungen <code>SCHACHTBAUWERK</code>.</li>
+          <li><strong>Plotstile:</strong> Werte wie „Normal“, „Farbe“ oder leere Beschreibungen – Standardfunktion verifizieren.</li>
+          <li><strong>Farbstandards:</strong> Entscheidung ob Bildschirmfarben Arbeitsfarben oder bindende Darstellungsnorm sind.</li>
+          <li><strong>Linientypkatalog:</strong> <code>CONTINIOUS</code> und <code>Continuous</code> parallel – Verwendung und Schreibweise klären.</li>
+          <li><strong>Maßstabsvarianten:</strong> M500- und M1000-Linientypen als separate Einträge – automatisch nach Maßstab oder manuell?</li>
+          <li><strong>Farb-Dokumentation:</strong> Aktuell nur magenta (RGB 255,0,255) dokumentiert – vollständiger bindender Farbenkatalog noch offen.</li>
+        </ul>
+      </section>
+
+      <!-- Section 16: DIN -->
+      <section id="din" class="section">
+        <div class="section-num">16</div>
+        <h1>Information #4 – Rolle der DIN 1356-1</h1>
+        <p class="subtitle">Ergänzung, nicht dominierende Grundlage.</p>
+
+        <p>Als Quelle wurde genannt: <strong>DIN 1356-1:2018 – Bauzeichnungen – Teil 1: Grundregeln der Darstellung.</strong> Nach ausdrücklicher Vorgabe soll sie im weiteren Verlauf nur als kleine Ergänzung bzw. Orientierung verwendet und nicht übergewichtet werden.</p>
+
+        <div class="note-box" style="margin-top: 1rem;">
+          Die DIN-Datei war im aktuell verarbeiteten Uploadsatz nicht als eigenständige Datei verfügbar. Deshalb werden hier keine konkreten Norminhalte behauptet oder ergänzt. Aufgenommen wurde ausschließlich die vorgegebene Rolle der Norm.
+        </div>
+      </section>
+
+      <!-- Section 17: Master Prompt -->
+      <section id="master-prompt" class="section">
+        <div class="section-num">17</div>
+        <h1>Wiederverwendbarer vollständiger Master-Prompt</h1>
+        <p class="subtitle">Enthält Kontext, Reihenfolge, Blocknamen, offene Punkte, visuelle Layer und sämtliche Layer-Manager-Zeilen.</p>
+
+        <div class="prompt-box" id="master-prompt-text"></div>
+
+        <div class="note-box teal" style="margin-top: 1.5rem;">
+          <strong>Nächster Zustand:</strong> Diese Informationsaufnahme ist bewusst noch kein fertiger Standard. Sie dient als vollständige Grundlage, auf der die nächsten Anweisungen nacheinander umgesetzt werden können.
+        </div>
+      </section>
+
+      <footer class="doc-footer">
+        Kanalstandard – vollständige Informationsaufnahme · eingebettete Originalbilder · vollständige Layerliste · offene Entscheidungen klar gekennzeichnet
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const LAYERS = [
+      { name: "BKAN_ANSCHLUSSLEITUNG", plotstil: "0.25" },
+      { name: "BKAN_DRUCKLEITUNG", plotstil: "0.35" },
+      { name: "BKAN_DRUCKLEITUNG_M", plotstil: "0.35" },
+      { name: "BKAN_DRUCKLEITUNG_R", plotstil: "0.35" },
+      { name: "BKAN_DRUCKLEITUNG_S", plotstil: "0.35" },
+      { name: "BKAN_HAUSANSCHL", plotstil: "0.25" },
+      { name: "BKAN_KANALACHSE", plotstil: "0.25" },
+      { name: "BKAN_LINIE_DRAINAGE_KANAL", plotstil: "0.25" },
+      { name: "BKAN_LINIE_M_Haltung", plotstil: "0.25" },
+      { name: "BKAN_LINIE_R_Haltung", plotstil: "0.25" },
+      { name: "BKAN_LINIE_S_Haltung", plotstil: "0.25" },
+      { name: "BKAN_ROHRWANDUNG_M_KAN", plotstil: "0.35" },
+      { name: "BKAN_ROHRWANDUNG_R_KAN", plotstil: "0.35" },
+      { name: "BKAN_ROHRWANDUNG_S_KAN", plotstil: "0.35" },
+      { name: "BKAN_SCHACHTBAU_M_KAN", plotstil: "0.35" },
+      { name: "BKAN_SCHACHTBAU_R_KAN", plotstil: "0.35" },
+      { name: "BKAN_SCHACHTBAU_S_KAN", plotstil: "0.35" },
+      { name: "BKAN_SCHACHTNR_DRAINAGE", plotstil: "0.25" },
+      { name: "BKAN_SCHACHTNR_M_KAN", plotstil: "0.25" },
+      { name: "BKAN_SCHACHTNR_R_KAN", plotstil: "0.25" },
+      { name: "BKAN_SCHACHTNR_S_KAN", plotstil: "0.25" },
+      { name: "BKAN_STAUZIEL_MSP", plotstil: "0.25" },
+      { name: "BKAN_STUTZEN_DRAINAGE", plotstil: "0.25" },
+      { name: "BKAN_STUTZEN_M_KANAL", plotstil: "0.25" },
+      { name: "BKAN_STUTZEN_R_KANAL", plotstil: "0.25" },
+      { name: "BKAN_STUTZEN_S_KANAL", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DECK_SOHLE_DRAINAGE", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DECK_SOHLE_M_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DECK_SOHLE_R_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DECK_SOHLE_S_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DRUCKLEITUNG_M", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DRUCKLEITUNG_R", plotstil: "0.25" },
+      { name: "BKAN_TEXT_DRUCKLEITUNG_S", plotstil: "0.25" },
+      { name: "BKAN_TEXT_HALTUNG_DRAINAGE", plotstil: "0.25" },
+      { name: "BKAN_TEXT_HALTUNG_M_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_HALTUNG_R_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_HALTUNG_S_KAN", plotstil: "0.25" },
+      { name: "BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN", plotstil: "0.25" },
+      { name: "BKAN_PUMPLEITUNG", plotstil: "0.35" },
+      { name: "BKAN_SAUGLEITUNG", plotstil: "0.35" },
+      { name: "BKAN_MW_LEITUNG", plotstil: "0.35" },
+      { name: "BVER_", plotstil: "" },
+      { name: "BVER_AUSA", plotstil: "0.25" },
+      { name: "BVER_BELEUCHTUNGKABEL", plotstil: "0.25" },
+      { name: "BVER_BELEUCHTUNGKABEL_SCHUTZR", plotstil: "0.25" },
+      { name: "BVER_BREITBAND", plotstil: "0.25" },
+      { name: "BVER_FERNMELDEKABEL", plotstil: "0.25" },
+      { name: "BVER_FERNWÄRME-RÜCK", plotstil: "0.35" },
+      { name: "BVER_FERNWÄRME-VOR", plotstil: "0.35" },
+      { name: "BVER_GAS", plotstil: "0.35" },
+      { name: "BVER_GASHOCHDRUCKLEITUNG", plotstil: "0.7" },
+      { name: "BVER_HOCHSPANNUNG", plotstil: "0.35" },
+      { name: "BVER_KABELKAN_SCHUTZR", plotstil: "0.25" },
+      { name: "BVER_KORROSIONSSCHUTZ", plotstil: "0.25" },
+      { name: "BVER_LEERROHR", plotstil: "0.25" },
+      { name: "BVER_LICHTWELLENLEITER", plotstil: "0.25" },
+      { name: "BVER_MITTELSPANNUNG", plotstil: "0.35" },
+      { name: "BVER_NIEDERSPANNUNG", plotstil: "0.25" },
+      { name: "BVER_ROHRPOST", plotstil: "0.25" },
+      { name: "BVER_SIGNALKABEL", plotstil: "0.25" },
+      { name: "BVER_STEUERKABEL", plotstil: "0.25" },
+      { name: "BVER_TELEKOM", plotstil: "0.25" },
+      { name: "BVER_TRINKWASSER", plotstil: "0.25" },
+      { name: "BKAT_GEBÄUDE", plotstil: "0.35" },
+      { name: "BLAL_GEBÄUDE_TRAFO", plotstil: "0.35" }
+    ];
+
+    const LINETYPE_GROUPS = {
+      Sonstige: "sonstige",
+      ENTW: "entw",
+      GP: "gp",
+      "Höhenlinien": "hoehen",
+      LEV: "lev",
+      MARK: "mark",
+      VERS: "vers",
+      ZAUN: "zaun"
+    };
+
+    const LINETYPES = [
+      { name: "CONTINUOUS", desc: "Durchgehend", group: "Sonstige", dash: "" },
+      { name: "Continuous", desc: "Durchgehend (Variante)", group: "Sonstige", dash: "" },
+      { name: "DASHED", desc: "Gestrichelt", group: "Sonstige", dash: "12 6" },
+      { name: "DASHDOT", desc: "Strich-Punkt", group: "Sonstige", dash: "12 4 2 4" },
+      { name: "ENTW_Entfaellt", desc: "Entfällt", group: "ENTW", dash: "" },
+      { name: "ENTW_GESTRICHELT", desc: "Gestrichelt ENTW", group: "ENTW", dash: "8 4" },
+      { name: "ENTW_KANALANSCHLUSS", desc: "Kanalanschluss", group: "ENTW", dash: "4 2 1 2 1 2" },
+      { name: "ENTW_MARKIERUNG_X", desc: "Markierung X", group: "ENTW", dash: "10 4" },
+      { name: "ENTW_PUNKT_DREI", desc: "Punkt drei", group: "ENTW", dash: "8 2 1 2 1 2" },
+      { name: "GP_GESTRICHELT", desc: "GP gestrichelt", group: "GP", dash: "10 5" },
+      { name: "GP_GESTRICHELT 6_1", desc: "GP gestrichelt 6_1", group: "GP", dash: "12 6" },
+      { name: "GP_DURCHGEZOGEN", desc: "GP durchgezogen", group: "GP", dash: "" },
+      { name: "GP_STRICH_PUNKT", desc: "GP Strich-Punkt", group: "GP", dash: "12 4 2 4" },
+      { name: "HÖHENLINIE_DÜNN", desc: "Höhenlinie dünn", group: "Höhenlinien", dash: "6 4" },
+      { name: "HÖHENLINIE_MITTEL", desc: "Höhenlinie mittel", group: "Höhenlinien", dash: "10 5" },
+      { name: "HÖHENLINIE_DICK", desc: "Höhenlinie dick", group: "Höhenlinien", dash: "14 6" },
+      { name: "LEV_Mittelspannung_Fernheizung", desc: "Mittelspannung Fernheizung", group: "LEV", dash: "10 3 1 3 1 3" },
+      { name: "LEV_NIEDERSPANNUNG", desc: "Niederspannung", group: "LEV", dash: "12 4 2 4" },
+      { name: "LEV_GAS", desc: "Gas LEV", group: "LEV", dash: "8 2 2 2" },
+      { name: "LEV_WASSER", desc: "Wasser LEV", group: "LEV", dash: "10 4 1 4" },
+      { name: "MARK_punkt_kurz", desc: "Markierung kurz", group: "MARK", dash: "4 3" },
+      { name: "MARK_punkt_mittel", desc: "Markierung mittel", group: "MARK", dash: "8 4" },
+      { name: "MARK_punkt_lang", desc: "Markierung lang", group: "MARK", dash: "14 6" },
+      { name: "MARK_doppel", desc: "Doppelstrich", group: "MARK", dash: "6 2 6 8" },
+      { name: "VERS_BEL", desc: "Beleuchtung BEL", group: "VERS", dash: "8 4" },
+      { name: "VERS_GAS", desc: "Gas Versorgung", group: "VERS", dash: "12 4 2 4" },
+      { name: "VERS_TELEKOM", desc: "Telekom", group: "VERS", dash: "10 5" },
+      { name: "VERS_TELEKOM_M500", desc: "Telekom M500", group: "VERS", dash: "10 5" },
+      { name: "VERS_TELEKOM_M1000", desc: "Telekom M1000", group: "VERS", dash: "14 7" },
+      { name: "TRINKWASSER", desc: "Trinkwasser", group: "Sonstige", dash: "" },
+      { name: "VORH_DRUCKLEITUNG", desc: "Vorhandene Druckleitung", group: "Sonstige", dash: "12 6" },
+      { name: "ZAUN", desc: "Zaun", group: "ZAUN", dash: "8 4" },
+      { name: "ZAUN_90", desc: "Zaun 90°", group: "ZAUN", dash: "8 4" },
+      { name: "ZAUN_VBR", desc: "Zaun VBR", group: "ZAUN", dash: "10 4" },
+      { name: "ZAUN1", desc: "Zaun Variante 1", group: "ZAUN", dash: "6 3" }
+    ];
+
+    function linePreviewSvg(dash) {
+      const dashAttr = dash ? `stroke-dasharray="${dash}"` : "";
+      return `<svg class="line-preview" viewBox="0 0 160 20" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="4" y1="10" x2="156" y2="10" stroke="#f3f4f6" stroke-width="2" ${dashAttr}/>
+      </svg>`;
+    }
+
+    function iconOn() { return "💡"; }
+    function iconFreeze() { return "☀"; }
+    function iconLock() { return "🔒"; }
+    function iconPlot() { return "🖨"; }
+
+    function renderLayers() {
+      const tbody = document.getElementById("layer-tbody");
+      tbody.innerHTML = LAYERS.map((layer, i) => {
+        const nr = i;
+        return `<tr data-index="${i}">
+          <td>${nr}</td>
+          <td class="col-name">${layer.name}</td>
+          <td class="col-icon icon-cell">${iconOn()}</td>
+          <td class="col-icon icon-cell">${iconFreeze()}</td>
+          <td class="col-icon icon-cell">${iconLock()}</td>
+          <td class="col-icon icon-cell">${iconPlot()}</td>
+          <td class="col-icon">■</td>
+          <td>Continuous</td>
+          <td>Default</td>
+          <td>–</td>
+          <td>0</td>
+          <td class="col-icon icon-cell">${iconFreeze()}</td>
+          <td class="col-plotstil">${layer.plotstil || "–"}</td>
+        </tr>`;
+      }).join("");
+
+      const bkan = LAYERS.filter(l => l.name.startsWith("BKAN")).length;
+      const bver = LAYERS.filter(l => l.name.startsWith("BVER")).length;
+      const other = LAYERS.length - bkan - bver;
+      document.getElementById("stat-bkan").textContent = bkan;
+      document.getElementById("stat-bver").textContent = bver;
+      document.getElementById("stat-other").textContent = other;
+
+      tbody.querySelectorAll("tr").forEach(row => {
+        row.addEventListener("click", () => {
+          tbody.querySelectorAll("tr").forEach(r => r.classList.remove("selected"));
+          row.classList.add("selected");
+        });
+      });
+    }
+
+    function renderLinetypes() {
+      const tbody = document.getElementById("linetype-tbody");
+      tbody.innerHTML = LINETYPES.map(lt => {
+        const badgeClass = LINETYPE_GROUPS[lt.group] || "sonstige";
+        return `<tr>
+          <td class="col-name">${lt.name}</td>
+          <td>${linePreviewSvg(lt.dash)}</td>
+          <td>${lt.desc}</td>
+          <td><span class="badge ${badgeClass}">${lt.group}</span></td>
+        </tr>`;
+      }).join("");
+    }
+
+    const MASTER_PROMPT = `MASTER-PROMPT: KANALSTANDARD / WORKSHOP-VORBEREITUNG
+
+ROLLE UND ARBEITSMODUS
+• Aufgabe: Schrittweise Entwicklung und Konsolidierung eines gemeinsamen CAD-/Zeichnungsstandards für Kanal und später Versorgungspläne.
+• Strikt quellenbasiert arbeiten – keine erfundenen Schriftgrößen, Layer oder Darstellungsregeln.
+• Fehlende Entscheidungen als „OFFEN“ kennzeichnen.
+• DIN 1356-1 nur ergänzend, nicht dominierend.
+
+ORIGINALKONTEXT
+Formalisierte Standards mit Zeichnern, beginnend mit Bestandskanal: Kanaltypen (RW, SW, MW, Druckleitungen), Layer je Objekt, Textstile, Schriftgrößen, Maßstäbe 1:250 und 1:500. Ziel: gemeinsame DWG-Datei über ca. ein halbes Jahr.
+
+ZIEL UND REIHENFOLGE
+1. Zuerst nur Bestandskanal strukturieren.
+2. Kanaltypen: RW, SW, MW; Drainage, Druck-, Saug-, Pump-, Anschluss- und Hausanschlussleitungen.
+3. Pro Objekt: Layer, Texte, Schacht-/Haltungsinfos, Linien-/Signaturdarstellung, Schriftgrößen.
+4. Getrennt für 1:250 und 1:500.
+5. Erstes Meeting (~20–30 Min.): Struktur und Entscheidungslisten.
+6. Gleiches Systematik für Kanalplanung.
+7. Versorgungsleitungen danach.
+8. Schrittweise in gemeinsame Standard-DWG überführen.
+
+BEREITGESTELLTE QUELLEN
+• Original-CAD-Bilder image(108).png bis image(117).png
+• Excel: Kanal_Layereigenschaften_Layer-Manager.xlsx
+• Linientyp-Screenshots image(125)–image(127)
+• Farb-Screenshots image(128)–image(129)`;
+
+    function renderMasterPrompt() {
+      const el = document.getElementById("master-prompt-text");
+      el.textContent = MASTER_PROMPT;
+    }
+
+    function initNav() {
+      const links = document.querySelectorAll("nav.sidebar a");
+      const sections = [...links].map(a => document.querySelector(a.getAttribute("href")));
+
+      function onScroll() {
+        const y = window.scrollY + 120;
+        let current = 0;
+        sections.forEach((sec, i) => {
+          if (sec && sec.offsetTop <= y) current = i;
+        });
+        links.forEach((a, i) => a.classList.toggle("active", i === current));
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+
+    renderLayers();
+    renderLinetypes();
+    renderMasterPrompt();
+    initNav();
+  </script>
+</body>
+</html>
