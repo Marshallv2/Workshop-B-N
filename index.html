@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanalstandard – Workshop-Arbeitsgrundlage</title>
+<meta name="description" content="Vollständige, quellenbezogene Aufnahme von Nachricht, Originalbildern, Layer-Manager-Daten, Blocknamen, Linientypen, Farben und offenen Entscheidungen zum gemeinsamen Kanalstandard.">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+
+<a class="skip" href="#inhalt">Direkt zum Inhalt</a>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="hero__eyebrow">Arbeitsstand · Informationsaufnahme · noch keine finale Standardfestlegung</p>
+    <h1>Kanalstandard</h1>
+    <p class="hero__lead">
+      Vollständige, quellenbezogene Aufnahme der bereitgestellten Nachricht, Originalbilder,
+      Layer-Manager-Daten, Blocknamen und offenen Entscheidungen. Dieses Dokument ist als
+      strukturierte Arbeitsgrundlage und als wiederverwendbarer Prompt für die nächsten Schritte gedacht.
+    </p>
+    <ul class="badges" id="hero-badges"></ul>
+  </div>
+</header>
+
+<nav class="nav" aria-label="Abschnittsnavigation">
+  <div class="wrap nav__inner">
+    <ul class="nav__list" id="nav-list"></ul>
+    <div class="nav__tools">
+      <button class="btn btn--sm" id="toggle-all" type="button" aria-pressed="false">Alle Gruppen öffnen</button>
+      <button class="btn btn--sm" id="toggle-theme" type="button" aria-pressed="false">Dunkel</button>
+      <button class="btn btn--sm" id="print-doc" type="button">Drucken</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap" id="inhalt">
+
+  <!-- ============================================================ 01 -->
+  <section class="section" id="status" data-nav="Status">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">1</span>
+      <div>
+        <h2 class="section__title">Dokumentstatus und Quellenpriorität</h2>
+        <p class="section__sub">Was dieses Dokument ist – und was noch nicht.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__value">66</div>
+        <div class="stat__label">vollständige Zeilen aus dem Layer-Manager</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value">15</div>
+        <div class="stat__label">eingebettete Original- und Referenzabbildungen</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value">20–30</div>
+        <div class="stat__label">Minuten Zielrahmen des ersten Workshops</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Maßgebliche Grundlagen:</strong> die ursprüngliche Nachricht, die Originalbilder und die
+      bereitgestellten Layer-Manager-Dateien. Die erzeugte Infografik wird nur ergänzend eingebunden
+      und ist keine Ersatzquelle.
+    </div>
+
+    <div class="callout callout--open">
+      <strong>Wichtige Abgrenzung:</strong> Es werden hier Informationen aufgenommen, gegliedert und als
+      Entscheidungsgrundlage vorbereitet. Offene Punkte werden nicht eigenmächtig entschieden und keine
+      uneinheitlichen Layernamen stillschweigend „bereinigt“.
+    </div>
+
+    <h3 class="subhead" style="margin-top:22px">Anhänge und Quellenbasis</h3>
+    <div class="attachments" id="attachments"></div>
+  </section>
+
+  <!-- ============================================================ 02 -->
+  <section class="section" id="originalkontext" data-nav="Originalkontext">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">2</span>
+      <div>
+        <h2 class="section__title">Information #1 – Originalkontext</h2>
+        <p class="section__sub">Die Nachricht wird inhaltlich vollständig und unverändert als Ausgangspunkt bewahrt.</p>
+      </div>
+    </div>
+
+    <blockquote class="quote" id="original-message"></blockquote>
+
+    <h3 class="subhead" style="margin-top:22px">Daraus direkt abgeleitete Arbeitsanforderungen</h3>
+    <ul class="checks" id="work-requirements"></ul>
+  </section>
+
+  <!-- ============================================================ 03 -->
+  <section class="section" id="zielbild" data-nav="Zielbild">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">3</span>
+      <div>
+        <h2 class="section__title">Zielbild und schrittweise Reihenfolge</h2>
+        <p class="section__sub">Die gewünschte Standardisierung wird bewusst in kleine, getrennte Module zerlegt.</p>
+      </div>
+    </div>
+    <div class="grid grid--2" id="modules"></div>
+  </section>
+
+  <!-- ============================================================ 04 -->
+  <section class="section" id="termin" data-nav="Erster Termin">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">4</span>
+      <div>
+        <h2 class="section__title">Vorgeschlagene Struktur für den ersten Termin</h2>
+        <p class="section__sub">Ein 20–30-Minuten-Ablauf, der zu verbindlichen nächsten Schritten führt, ohne alles gleichzeitig lösen zu wollen.</p>
+      </div>
+    </div>
+    <div class="timeline" id="agenda"></div>
+  </section>
+
+  <!-- ============================================================ 05 -->
+  <section class="section" id="kanalarten" data-nav="Kanalarten">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">5</span>
+      <div>
+        <h2 class="section__title">Kanalarten und Darstellungsfamilien</h2>
+        <p class="section__sub">Zusammengeführt aus Nachricht, Layernamen und Originalbildern.</p>
+      </div>
+    </div>
+
+    <div class="grid grid--2">
+      <div>
+        <h3 class="subhead">Hauptkanalarten</h3>
+        <ul class="bullets" id="types-main"></ul>
+      </div>
+      <div>
+        <h3 class="subhead">Sonder- und Ergänzungsformen</h3>
+        <ul class="bullets" id="types-special"></ul>
+      </div>
+    </div>
+
+    <div class="callout callout--open">
+      <strong>Zu entscheiden:</strong> Welche Familien gehören verbindlich in den „klassischen“
+      Bestandsstandard und welche werden nur bei Bedarf verwendet? Ebenso ist zu klären, ob
+      Druckleitungen grundsätzlich neutral oder getrennt nach R/M/S dargestellt werden.
+    </div>
+  </section>
+
+  <!-- ============================================================ 06 -->
+  <section class="section" id="bilder" data-nav="Originalbilder">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">6</span>
+      <div>
+        <h2 class="section__title">Information #2 – sämtliche Originalbilder</h2>
+        <p class="section__sub">Die Abbildungen liegen in Originalauflösung im Ordner <code>assets/</code>. Anklicken zum Vergrößern.</p>
+      </div>
+    </div>
+
+    <div class="grid grid--2" style="margin-bottom:20px">
+      <div class="figure">
+        <button class="figure__frame" type="button" data-lightbox="overview" aria-label="Übersichtsgrafik vergrößern">
+          <img id="overview-img" alt="Erzeugte Übersichtsgrafik zum Kanalstandard">
+        </button>
+      </div>
+      <div>
+        <h3 class="subhead">Erzeugte visuelle Übersicht</h3>
+        <p class="figure__text" id="overview-text"></p>
+        <p class="figure__text" id="overview-priority" style="margin-top:10px"></p>
+      </div>
+    </div>
+
+    <div class="grid grid--cards" id="figures-kanal"></div>
+  </section>
+
+  <!-- ============================================================ 07 -->
+  <section class="section" id="bkan" data-nav="Layer Bestand">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">7</span>
+      <div>
+        <h2 class="section__title">Information #3 – Layerstruktur Bestandskanal</h2>
+        <p class="section__sub">Die Layer werden hier objektbezogen gegliedert; die vollständigen Eigenschaften stehen zusätzlich in der Gesamttabelle.</p>
+      </div>
+    </div>
+
+    <div class="table-tools">
+      <label class="field">
+        <span class="field__icon" aria-hidden="true">Suche</span>
+        <input type="search" id="bkan-filter" placeholder="Layername oder Teilwort" aria-label="Bestandslayer filtern">
+      </label>
+      <span class="count" id="bkan-count"></span>
+    </div>
+
+    <div class="grid grid--2" id="bkan-groups"></div>
+
+    <div class="note-panel" style="margin-top:18px">
+      Der Layer-Manager enthält für jeden Eintrag unter anderem Status, Farbe, Linientyp, Linienstärke,
+      Transparenz, Verhalten in neuen Ansichtsfenstern und Plotstil. Die Daten werden weiter unten
+      vollständig, zeilengetreu und filterbar dargestellt.
+    </div>
+  </section>
+
+  <!-- ============================================================ 08 -->
+  <section class="section" id="kanpl" data-nav="Kanalplanung">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">8</span>
+      <div>
+        <h2 class="section__title">Kanalplanung – aus den Originalbildern aufgenommen</h2>
+        <p class="section__sub">Die Planungslayer sind nicht Bestandteil der bereitgestellten Layer-Manager-Tabelle; sie werden deshalb als visuell abgelesene Arbeitsbasis getrennt geführt.</p>
+      </div>
+    </div>
+
+    <ul class="chips" id="kanpl-layers"></ul>
+
+    <div class="callout callout--open">
+      <strong>Schreibweisen nicht normalisiert:</strong> In den Bildern erscheinen beispielsweise „LINE“,
+      „Linie“ und „LINIE“ sowie unterschiedliche Endungen. Diese Unterschiede sind selbst ein
+      Workshop-Thema und werden hier bewusst nicht eigenmächtig korrigiert.
+    </div>
+  </section>
+
+  <!-- ============================================================ 09 -->
+  <section class="section" id="bloecke" data-nav="Blöcke">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">9</span>
+      <div>
+        <h2 class="section__title">Information #5 – Schachtfähnchen und Blocknamen</h2>
+        <p class="section__sub">Die Bilder 114 bis 117 zeigen Blocklogik, Detailaufbau und Bestand-/Planungsvarianten.</p>
+      </div>
+    </div>
+
+    <div class="grid grid--2">
+      <div>
+        <h3 class="subhead">Planung</h3>
+        <ul class="chips" id="blocks-planung"></ul>
+      </div>
+      <div>
+        <h3 class="subhead">Bestand</h3>
+        <ul class="chips" id="blocks-bestand"></ul>
+      </div>
+    </div>
+
+    <h3 class="subhead" style="margin-top:22px">Aus den Fähnchenbildern erkennbare Bausteine</h3>
+    <ul class="bullets" id="block-parts"></ul>
+  </section>
+
+  <!-- ============================================================ 10 -->
+  <section class="section" id="bver" data-nav="V-Leitungen">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">10</span>
+      <div>
+        <h2 class="section__title">Spätere Termine – Versorgungsleitungen / V-Leitungen</h2>
+        <p class="section__sub">Diese Informationen werden vollständig aufgenommen, aber gemäß Originalauftrag erst nach der Kanalplanung behandelt.</p>
+      </div>
+    </div>
+
+    <ul class="chips" id="bver-layers"></ul>
+
+    <p class="figure__text" style="margin-top:16px">
+      Die Bilder ergänzen die Layerliste durch konkrete Signaturen und Beschriftungen für Leerrohr,
+      Schutzrohre, Beleuchtung, LWL, Fernmelde, Gas, Gashochdruck, Stromspannungen, Korrosionsschutz,
+      Signal-/Steuerkabel, Trinkwasser, AUSA, Rohrpost, Breitband, Telekom und Fernwärme.
+    </p>
+  </section>
+
+  <!-- ============================================================ 11 -->
+  <section class="section" id="massstab" data-nav="1:250 / 1:500">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">11</span>
+      <div>
+        <h2 class="section__title">Texte, Inhalte und Schriftgrößen für 1:250 / 1:500</h2>
+        <p class="section__sub">Die Bilder liefern Textarten und Beispielinhalte; konkrete Schriftgrößen wurden noch nicht vorgegeben. Die Felder sind im Termin direkt ausfüllbar.</p>
+      </div>
+    </div>
+
+    <div class="table-tools">
+      <button class="btn btn--sm" id="matrix-export" type="button">Matrix als Markdown kopieren</button>
+      <button class="btn btn--sm" id="matrix-reset" type="button">Eingaben zurücksetzen</button>
+      <span class="import__status" id="matrix-status" role="status"></span>
+      <span class="count" id="matrix-count"></span>
+    </div>
+
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th scope="col">Darstellungsgegenstand</th>
+          <th scope="col">Erkennbare Inhalte / Funktion</th>
+          <th scope="col" class="scale">1:250</th>
+          <th scope="col" class="scale">1:500</th>
+        </tr>
+      </thead>
+      <tbody id="matrix-body"></tbody>
+    </table>
+
+    <h3 class="subhead" style="margin-top:22px">Offene Grundsatzangaben aus „Sonstige Informationen“</h3>
+    <ul class="bullets">
+      <li><span class="flag">Offen</span> Klassisches Design im Bestand = nicht eingetragen / offen.</li>
+      <li><span class="flag">Offen</span> Klassisches Design in der Planung = nicht eingetragen / offen.</li>
+    </ul>
+  </section>
+
+  <!-- ============================================================ 12 -->
+  <section class="section" id="layermanager" data-nav="Layer-Manager">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">12</span>
+      <div>
+        <h2 class="section__title">Vollständiger Layer-Manager</h2>
+        <p class="section__sub">Sämtliche 66 Datensätze aus der XLSX-Datei, einschließlich unveränderter Schreibweisen und leerer Felder.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__value" id="lm-bkan">–</div>
+        <div class="stat__label">BKAN-Datensätze</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value" id="lm-bver">–</div>
+        <div class="stat__label">BVER-Datensätze</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value" id="lm-rest">–</div>
+        <div class="stat__label">sonstige Datensätze</div>
+      </div>
+    </div>
+
+    <div class="table-tools">
+      <label class="field">
+        <span class="field__icon" aria-hidden="true">Suche</span>
+        <input type="search" id="lm-filter" placeholder="Layername" aria-label="Layer-Manager filtern">
+      </label>
+      <label class="field">
+        <span class="field__icon" aria-hidden="true">Familie</span>
+        <select id="lm-family" aria-label="Layerfamilie wählen">
+          <option value="">alle</option>
+          <option value="BKAN">BKAN – Bestandskanal</option>
+          <option value="BVER">BVER – Versorgung</option>
+          <option value="REST">sonstige</option>
+        </select>
+      </label>
+      <span class="count" id="lm-count"></span>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data" id="lm-table">
+        <thead><tr id="lm-head"></tr></thead>
+        <tbody id="lm-body"></tbody>
+      </table>
+    </div>
+
+    <details class="import" data-import="layer">
+      <summary>Eigenschaftswerte aus der XLSX einfügen</summary>
+      <p class="import__hint">
+        Zeilen in Excel markieren und hier einfügen (Tabulator- oder Semikolongetrennt). Erste Spalte ist der
+        Layername, danach folgen <span class="mono">Ein, Frieren, Sperre, Plot, Farbe, Linientyp, Linienstärke,
+        Beschreibung, Transparenz, Frieren in neuen Ansichtsfenstern, Plotstil</span>. Eine Kopfzeile wird
+        automatisch erkannt und übersprungen. Die Werte bleiben lokal in diesem Browser gespeichert.
+      </p>
+      <textarea id="layer-import-input" spellcheck="false" aria-label="Layerdaten einfügen"></textarea>
+      <div class="import__actions">
+        <button class="btn btn--primary btn--sm" type="button" data-import-apply="layer">Werte übernehmen</button>
+        <button class="btn btn--sm" type="button" data-import-clear="layer">Übernommene Werte löschen</button>
+        <button class="btn btn--sm" type="button" data-import-dump="layer">Als data.js-Block kopieren</button>
+        <span class="import__status" data-import-status="layer" role="status"></span>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============================================================ 13 -->
+  <section class="section" id="linientypen" data-nav="Linientypen">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">13</span>
+      <div>
+        <h2 class="section__title">Linientypkatalog</h2>
+        <p class="section__sub">Aufnahme der zusätzlich bereitgestellten Linientypen einschließlich Darstellung und Beschreibung.</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__value" id="lt-total">–</div>
+        <div class="stat__label">Linientypen im Linientyp-Manager vorhanden</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value" id="lt-captured">–</div>
+        <div class="stat__label">davon namentlich gesichert aufgenommen</div>
+      </div>
+      <div class="stat">
+        <div class="stat__value">3</div>
+        <div class="stat__label">Original-Screenshots des Linientyp-Managers</div>
+      </div>
+    </div>
+
+    <div class="callout callout--open" id="lt-gap"></div>
+
+    <div class="grid grid--cards" id="figures-linientypen" style="margin-top:20px"></div>
+
+    <h3 class="subhead" style="margin-top:22px">Gruppen</h3>
+    <ul class="chips" id="lt-groups"></ul>
+
+    <div class="table-tools" style="margin-top:20px">
+      <label class="field">
+        <span class="field__icon" aria-hidden="true">Suche</span>
+        <input type="search" id="lt-filter" placeholder="Linientyp oder Beschreibung" aria-label="Linientypen filtern">
+      </label>
+      <span class="count" id="lt-count"></span>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data" id="lt-table">
+        <thead>
+          <tr>
+            <th scope="col">Linientyp</th>
+            <th scope="col">Darstellung</th>
+            <th scope="col">Beschreibung</th>
+            <th scope="col">Gruppe</th>
+          </tr>
+        </thead>
+        <tbody id="lt-body"></tbody>
+      </table>
+    </div>
+
+    <div id="lt-notes"></div>
+
+    <details class="import" data-import="linetype">
+      <summary>Vollständige Linientypliste einfügen</summary>
+      <p class="import__hint">
+        Spalten: <span class="mono">Linientyp, Beschreibung, Darstellung (optional)</span>, Tabulator- oder
+        Semikolongetrennt. Die Gruppe wird aus dem Namenspräfix abgeleitet und kann als vierte Spalte
+        überschrieben werden.
+      </p>
+      <textarea id="linetype-import-input" spellcheck="false" aria-label="Linientypen einfügen"></textarea>
+      <div class="import__actions">
+        <button class="btn btn--primary btn--sm" type="button" data-import-apply="linetype">Liste übernehmen</button>
+        <button class="btn btn--sm" type="button" data-import-clear="linetype">Übernommene Liste löschen</button>
+        <button class="btn btn--sm" type="button" data-import-dump="linetype">Als data.js-Block kopieren</button>
+        <span class="import__status" data-import-status="linetype" role="status"></span>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============================================================ 14 -->
+  <section class="section" id="farben" data-nav="Farben">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">14</span>
+      <div>
+        <h2 class="section__title">Farbenkatalog – aktuell dokumentierter Farbwert</h2>
+        <p class="section__sub">Aufnahme der beiden bereitgestellten AutoCAD-Farbauswahl-Screenshots.</p>
+      </div>
+    </div>
+
+    <div class="grid grid--cards" id="figures-farben" style="margin-bottom:20px"></div>
+
+    <div class="swatch-row" id="color-swatches"></div>
+
+    <div class="callout callout--open">
+      <strong>Stand des Farbenkatalogs:</strong> Die neuen Bilder dokumentieren derzeit konkret die Farbe
+      magenta. Weitere Farben können später in derselben Struktur mit Indexfarbe, RGB-/HSL-Werten,
+      Verwendungszweck und zugeordneten Layern ergänzt werden.
+    </div>
+  </section>
+
+  <!-- ============================================================ 15 -->
+  <section class="section" id="pruefpunkte" data-nav="Prüfpunkte">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">15</span>
+      <div>
+        <h2 class="section__title">Auffälligkeiten und bewusste Prüfpunkte</h2>
+        <p class="section__sub">Keine automatischen Korrekturen – diese Punkte sollten gemeinsam entschieden werden.</p>
+      </div>
+    </div>
+    <ul class="bullets" id="findings"></ul>
+  </section>
+
+  <!-- ============================================================ 16 -->
+  <section class="section" id="din" data-nav="DIN 1356-1">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">16</span>
+      <div>
+        <h2 class="section__title">Information #4 – Rolle der DIN 1356-1</h2>
+        <p class="section__sub">Ergänzung, nicht dominierende Grundlage.</p>
+      </div>
+    </div>
+
+    <p>
+      Als Quelle wurde genannt: <strong>DIN 1356-1_2018 – Bauzeichnungen – Teil 1: Grundregeln der
+      Darstellung</strong>. Nach ausdrücklicher Vorgabe soll sie im weiteren Verlauf nur als kleine
+      Ergänzung bzw. Orientierung verwendet und nicht übergewichtet werden.
+    </p>
+
+    <div class="callout callout--open">
+      Die DIN-Datei war im aktuell verarbeiteten Uploadsatz nicht als eigenständige Datei verfügbar.
+      Deshalb werden hier keine konkreten Norminhalte behauptet oder ergänzt. Aufgenommen wurde
+      ausschließlich die vorgegebene Rolle der Norm.
+    </div>
+  </section>
+
+  <!-- ============================================================ 17 -->
+  <section class="section" id="entscheidungen" data-nav="Beschlussliste">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">17</span>
+      <div>
+        <h2 class="section__title">Offene Entscheidungen – Beschlussliste</h2>
+        <p class="section__sub">Alle im Dokument gekennzeichneten offenen Punkte an einer Stelle. Status und Notizen lassen sich im Termin direkt festhalten und als Protokoll ausgeben.</p>
+      </div>
+    </div>
+
+    <div class="table-tools">
+      <label class="field">
+        <span class="field__icon" aria-hidden="true">Status</span>
+        <select id="dec-filter" aria-label="Nach Status filtern">
+          <option value="">alle</option>
+          <option value="offen">offen</option>
+          <option value="klaerung">in Klärung</option>
+          <option value="entschieden">entschieden</option>
+        </select>
+      </label>
+      <button class="btn btn--sm" id="dec-export" type="button">Protokoll als Markdown kopieren</button>
+      <button class="btn btn--sm" id="dec-download" type="button">Protokoll herunterladen</button>
+      <button class="btn btn--sm" id="dec-reset" type="button">Zurücksetzen</button>
+      <span class="import__status" id="dec-status" role="status"></span>
+      <span class="count" id="dec-count"></span>
+    </div>
+
+    <div class="decision-list" id="decisions"></div>
+  </section>
+
+  <!-- ============================================================ 18 -->
+  <section class="section" id="prompt" data-nav="Master-Prompt">
+    <div class="section__head">
+      <span class="section__num" aria-hidden="true">18</span>
+      <div>
+        <h2 class="section__title">Wiederverwendbarer vollständiger Master-Prompt</h2>
+        <p class="section__sub">Enthält Kontext, Reihenfolge, Quellen, Layerfamilien, Blocknamen, Linientypen, Farben und offene Punkte.</p>
+      </div>
+    </div>
+
+    <div class="prompt-actions">
+      <button class="btn btn--primary btn--sm" id="prompt-copy" type="button">Master-Prompt kopieren</button>
+      <button class="btn btn--sm" id="prompt-copy-state" type="button">Mit aktuellem Beschlussstand kopieren</button>
+      <span class="import__status" id="prompt-status" role="status"></span>
+    </div>
+
+    <div class="prompt-box">
+      <pre class="prompt" id="prompt-text"></pre>
+    </div>
+
+    <div class="callout">
+      <strong>Nächster Zustand:</strong> Diese Informationsaufnahme ist bewusst noch kein fertiger Standard.
+      Sie dient als vollständige Grundlage, auf die die nächsten Anweisungen nacheinander umgesetzt
+      werden können.
+    </div>
+  </section>
+
+  <noscript>
+    <div class="callout callout--open">
+      Ohne JavaScript werden die Datentabellen, Layerlisten und Bildergalerien nicht aufgebaut.
+      Die Quelldaten stehen vollständig lesbar in <span class="mono">src/data.js</span>.
+    </div>
+  </noscript>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <span>Kanalstandard – vollständige Informationsaufnahme · eingebettete Originalbilder · vollständige Layerliste · offene Entscheidungen klar gekennzeichnet</span>
+    <span class="mono" id="footer-meta"></span>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="Bildansicht">
+  <div class="lightbox__inner">
+    <button class="btn lightbox__close" type="button" id="lightbox-close">Schließen</button>
+    <img id="lightbox-img" alt="">
+    <p class="lightbox__caption" id="lightbox-caption"></p>
+  </div>
+</dialog>
+
+<script src="src/data.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Erzeugte Einzeldatei aus tools/build-standalone.mjs
+dist/
+
+# Originaldateien liegen lokal, nicht im Repository
+assets/*
+!assets/README.md
+
+.DS_Store
+Thumbs.db
