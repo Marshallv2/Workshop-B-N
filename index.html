@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanal- &amp; Versorgungs-Workshop – Layereigenschaften</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --muted: #656d76;
+      --accent: #0969da;
+      --cat-a: #1a7f37;
+      --cat-b: #0969da;
+      --cat-c: #bf8700;
+      --cat-d: #cf222e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    header {
+      background: #24292f;
+      color: #fff;
+      padding: 1.25rem 1.5rem;
+    }
+    header h1 { margin: 0 0 0.35rem; font-size: 1.35rem; font-weight: 600; }
+    header p { margin: 0; color: #c9d1d9; font-size: 0.9rem; max-width: 72rem; }
+    main { padding: 1rem 1.5rem 2rem; max-width: 100%; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .toolbar label { font-size: 0.85rem; color: var(--muted); }
+    .toolbar select, .toolbar input[type="text"], .toolbar button {
+      font: inherit;
+      padding: 0.35rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fff;
+    }
+    .toolbar button {
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 500;
+    }
+    .toolbar button.secondary {
+      background: #fff;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .toolbar button.danger { background: #cf222e; border-color: #cf222e; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-a { background: #dafbe1; color: var(--cat-a); }
+    .badge-b { background: #ddf4ff; color: var(--cat-b); }
+    .badge-c { background: #fff8c5; color: #7d4e00; }
+    .badge-d { background: #ffebe9; color: var(--cat-d); }
+    .info-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .info-panel h2 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .info-panel ul { margin: 0; padding-left: 1.2rem; }
+    .info-panel li { margin: 0.2rem 0; font-size: 0.9rem; }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      min-width: 1400px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 0.35rem 0.45rem;
+      vertical-align: middle;
+      text-align: left;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #f6f8fa;
+      z-index: 5;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    tr:hover td { background: #f6f8fa; }
+    tr.row-d { background: #fff8f8; }
+    tr.row-c { background: #fffef5; }
+    tr.row-b { background: #f8fcff; }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      min-width: 4.5rem;
+      font: inherit;
+      padding: 0.2rem 0.35rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    input[type="checkbox"] { width: auto; transform: scale(1.1); }
+    .name-cell { min-width: 14rem; font-weight: 500; }
+    .ref { font-size: 0.72rem; color: var(--muted); display: block; margin-top: 0.15rem; }
+    .color-row { display: flex; gap: 0.25rem; align-items: center; }
+    .color-preview {
+      width: 1.1rem;
+      height: 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .progress {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-left: auto;
+    }
+    footer {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: 72rem;
+    }
+    @media (max-width: 900px) {
+      .toolbar { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Kanal- &amp; Versorgungs-Workshop – Layereigenschaften</h1>
+    <p>
+      Interaktive Vorbereitung für den gemeinsamen CAD-Standard (Bestandskanal, später Planung &amp; V-Leitungen).
+      Quellenbezogen – nichts ist endgültiger Standard, bis im Workshop bestätigt.
+    </p>
+  </header>
+
+  <main>
+    <div class="legend">
+      <span class="badge badge-a">A – quellenmäßig vorhanden (XLSX/PDF)</span>
+      <span class="badge badge-b">B – aus Bildern sichtbar (noch nicht normalisiert)</span>
+      <span class="badge badge-c">C – vorgeschlagene Workshop-Struktur</span>
+      <span class="badge badge-d">D – noch gemeinsam zu entscheiden (OFFEN)</span>
+    </div>
+
+    <div class="info-panel" id="offenPanel">
+      <h2>Noch offene Grundsatzangaben (Kategorie D – nicht als Layer, sondern als Entscheidungsliste)</h2>
+      <ul>
+        <li>Klassisches Design im Bestand = <strong>OFFEN</strong></li>
+        <li>Klassisches Design in der Planung = <strong>OFFEN</strong></li>
+        <li>Schriftgrößen für 1:250 = <strong>OFFEN</strong></li>
+        <li>Schriftgrößen für 1:500 = <strong>OFFEN</strong></li>
+        <li>Endgültige Textinhalte, Textreihenfolge und Pflichtfelder = <strong>OFFEN</strong></li>
+        <li>Entscheidung Standarddarstellung oder nach R/M/S differenzierte Darstellung = <strong>OFFEN</strong></li>
+        <li>Verbindliche Normalisierung inkonsistenter Layernamen = <strong>OFFEN</strong></li>
+      </ul>
+    </div>
+
+    <div class="toolbar">
+      <label>Filter Kategorie
+        <select id="filterKategorie">
+          <option value="alle">Alle</option>
+          <option value="A">A – quellenmäßig</option>
+          <option value="B">B – aus Bildern</option>
+          <option value="C">C – Workshop-Vorschlag</option>
+          <option value="D">D – OFFEN</option>
+        </select>
+      </label>
+      <label>Filter Bereich
+        <select id="filterBereich">
+          <option value="alle">Alle</option>
+          <option value="kanal">Kanal / Haltung</option>
+          <option value="versorgung">Versorgungsleitungen</option>
+          <option value="sonst">Sonstige</option>
+        </select>
+      </label>
+      <label>Workshop-Maßstab (Vorgabe)
+        <select id="globalMassstab">
+          <option value="1:250">1:250</option>
+          <option value="1:500">1:500</option>
+          <option value="beide">Beide (1:250 + 1:500)</option>
+        </select>
+      </label>
+      <label>Suche
+        <input type="text" id="searchInput" placeholder="Layername…">
+      </label>
+      <button type="button" id="btnExportXlsx">Excel exportieren (.xlsx)</button>
+      <button type="button" id="btnExportCsv" class="secondary">CSV exportieren</button>
+      <button type="button" id="btnSave" class="secondary">Speichern (Browser)</button>
+      <button type="button" id="btnLoad" class="secondary">Laden</button>
+      <button type="button" id="btnReset" class="danger">Auf Quellwerte zurücksetzen</button>
+      <span class="progress" id="progressText"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kat.</th>
+            <th>Status</th>
+            <th>Name (AutoCAD-Layer)</th>
+            <th>Ein</th>
+            <th>Frieren</th>
+            <th>Sperre</th>
+            <th>Plot</th>
+            <th>Farbe</th>
+            <th>Linientyp</th>
+            <th>Linienstärke</th>
+            <th>Maßstab</th>
+            <th>Beschreibung</th>
+            <th>Transparenz</th>
+            <th>VP-Frieren</th>
+            <th>Plotstil</th>
+            <th>Quellen-Plotstil</th>
+          </tr>
+        </thead>
+        <tbody id="layerBody"></tbody>
+      </table>
+    </div>
+
+    <footer>
+      <p>
+        <strong>Hinweis:</strong> Plotstil im Export nur „Normal“ oder „vonLayer“ (Workshop-Auswahl).
+        Der Quellen-Plotstil aus XLSX/PDF bleibt als Referenz sichtbar. Schreibweisen und Tippfehler aus den Quellen
+        (z.&nbsp;B. CONTINIOUS, KANPL_Linie vs. LINIE) wurden unverändert übernommen.
+      </p>
+      <p>
+        Schachtfähnchen / Blöcke (Referenz): Planung: PFahneMisch, PFahneRegen, PFahneSchmutz, PfeilBlock —
+        Bestand: BFahneMisch, BFahneRegen, BFahneSchmutz.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    const LINE_TYPES = [
+      "Continuous", "CONTINIOUS", "GP_ACHSE", "GP_GESTRICHELT 6_1",
+      "ENTW_REGENWASSER", "ENTW_MISCHWASSER", "ENTW_VORH_DRUCKLEIT",
+      "AUSGEZOGEN", "VORH_DRUCKLEIT", "VERS_GAS", "VERS_TELEKOM",
+      "VERS_BELEUCHTUNG", "VERS_NIEDERSPANNUNG", "VERS_MITTELSPANNUNG",
+      "VERS_TRINKWASSER", "(OFFEN – im Workshop festlegen)"
+    ];
+
+    const LINE_WEIGHTS = [
+      "ByLineWeightDefault", "ByLayer", "0.00", "0.05", "0.09", "0.13",
+      "0.15", "0.18", "0.20", "0.25", "0.30", "0.35", "0.40", "0.50", "0.53",
+      "0.60", "0.70", "0.80", "0.90", "1.00", "1.06", "1.20", "1.40", "1.58",
+      "2.00", "2.11"
+    ];
+
+    const PLOTSTILE = ["Normal", "vonLayer"];
+
+    function layer(overrides) {
+      return {
+        kategorie: "A",
+        bereich: "kanal",
+        status: "",
+        name: "",
+        ein: true,
+        frieren: false,
+        sperre: false,
+        plot: true,
+        farbe: "",
+        linientyp: "Continuous",
+        linienstaerke: "ByLineWeightDefault",
+        massstab: "1:250",
+        beschreibung: "",
+        transparenz: 0,
+        vpFrieren: false,
+        plotstil: "vonLayer",
+        quellenPlotstil: "",
+        quellenHinweis: "",
+        ...overrides
+      };
+    }
+
+    // A – vollständig aus Kanal_Layereigenschaften_Layer-Manager.xlsx / PDF
+    const SOURCE_LAYERS = [
+      layer({ name: "BKAN_ANSCHLUSSLEITUNG", farbe: "161", linientyp: "VERS_GAS", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_DRUCKLEITUNG", farbe: "31", linientyp: "ENTW_VORH_DRUCKLEIT", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_DRUCKLEITUNG_M", farbe: "255,110,110", linientyp: "ENTW_VORH_DRUCKLEIT", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_DRUCKLEITUNG_R", farbe: "5,115,180", linientyp: "ENTW_VORH_DRUCKLEIT", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_DRUCKLEITUNG_S", farbe: "31", linientyp: "ENTW_VORH_DRUCKLEIT", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_HAUSANSCHL", farbe: "200", linientyp: "Continuous", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_KANALACHSE", farbe: "130", linientyp: "GP_ACHSE", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_LINIE_DRAINAGE_KANAL", farbe: "120", linientyp: "VERS_GAS", quellenPlotstil: "schwarz0.5" }),
+      layer({ name: "BKAN_LINIE_M_Haltung", farbe: "magenta", linientyp: "ENTW_MISCHWASSER", quellenPlotstil: "schwarz0.7" }),
+      layer({ name: "BKAN_LINIE_PUMPLEITUNG_KAN", farbe: "51", linientyp: "ENTW_VORH_DRUCKLEIT", plotstil: "Normal", quellenPlotstil: "Normal" }),
+      layer({ name: "BKAN_LINIE_R_KANAL", farbe: "140", linientyp: "ENTW_REGENWASSER", quellenPlotstil: "schwarz0.7" }),
+      layer({ name: "BKAN_LINIE_S_Haltung", farbe: "rot", linientyp: "AUSGEZOGEN", quellenPlotstil: "schwarz0.7" }),
+      layer({ name: "BKAN_LINIE_SAUGLEITUNG_KAN", farbe: "31", linientyp: "VORH_DRUCKLEIT", quellenPlotstil: "grau0.5" }),
+      layer({ name: "BKAN_ROHRWANDUNG_M_KAN", farbe: "131", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_ROHRWANDUNG_R_KAN", farbe: "131", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_ROHRWANDUNG_S_KAN", farbe: "41", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTBAUW_DRAINAGE_KAN", farbe: "20", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTBAUW_M_KAN", farbe: "20", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTBAUW_R_KAN", farbe: "20", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTBAUW_S_KAN", farbe: "11", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTNR_DRAINAGE", farbe: "20", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_SCHACHTNR_M_KAN", farbe: "rot", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTNR_R_KAN", farbe: "rot", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_SCHACHTNR_S_KAN", farbe: "30", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_STAUZIEL_WSP", farbe: "5,190,250", linientyp: "GP_GESTRICHELT 6_1", quellenPlotstil: "blau0.25" }),
+      layer({ name: "BKAN_STUTZEN_DRAINAGE", farbe: "50", linientyp: "Continuous", quellenPlotstil: "dunkelblau0.25" }),
+      layer({ name: "BKAN_STUTZEN_M_KANAL", farbe: "140", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_STUTZEN_R_KANAL", farbe: "140", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_STUTZEN_S_KANAL", farbe: "21", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_DECK_SOHLE_DRAINAGE", farbe: "50", linientyp: "VERS_GAS", quellenPlotstil: "dunkelblau0.5" }),
+      layer({ name: "BKAN_TEXT_DECK_SOHLE_M_KAN", farbe: "gelb", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_DECK_SOHLE_R_KAN", farbe: "gelb", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_DECK_SOHLE_S_KAN", farbe: "60", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_DRUCKLEITUNG_M", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_DRUCKLEITUNG_R", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_DRUCKLEITUNG_S", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_HALTUNG_DRAINAGE", farbe: "120", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_TEXT_HALTUNG_M_KAN", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN", farbe: "52", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_HALTUNG_R_KAN", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BKAN_TEXT_HALTUNG_S_KAN", farbe: "10", linientyp: "Continuous", quellenPlotstil: "schwarz0.35" }),
+      layer({ name: "BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN", farbe: "255,240,225", linientyp: "VORH_DRUCKLEIT", quellenPlotstil: "grau0.5" }),
+      layer({ name: "BKAT_GEBÄUDE", bereich: "sonst", farbe: "rot", linientyp: "Continuous", plotstil: "Normal", quellenPlotstil: "Normal" }),
+      layer({ name: "BLAL_GEBAEUDE_TRAFO", bereich: "sonst", farbe: "224", linientyp: "Continuous", quellenPlotstil: "grau0.5" }),
+      layer({ name: "BVER_", bereich: "versorgung", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BVER_AUSA", bereich: "versorgung", farbe: "211", linientyp: "VERS_TELEKOM", plotstil: "Normal", quellenPlotstil: "Normal" }),
+      layer({ name: "BVER_BELEUCHTUNGKABEL", bereich: "versorgung", farbe: "rot", linientyp: "VERS_BELEUCHTUNG", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_BELEUCHTUNGSKABEL_SCHUTZR", bereich: "versorgung", farbe: "weiß", linientyp: "CONTINIOUS", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BVER_BREITBAND", bereich: "versorgung", farbe: "gelb", linientyp: "CONTINIOUS", vpFrieren: true, quellenPlotstil: "pink0.25" }),
+      layer({ name: "BVER_FERNMELDEKABEL", bereich: "versorgung", farbe: "40", linientyp: "VERS_TELEKOM", quellenPlotstil: "mandarine0.25" }),
+      layer({ name: "BVER_FERNWÄRME-RÜCK", bereich: "versorgung", farbe: "30", linientyp: "CONTINIOUS", quellenPlotstil: "mittelgrün0.7" }),
+      layer({ name: "BVER_FERNWÄRME-VOR", bereich: "versorgung", farbe: "20", linientyp: "CONTINIOUS", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BVER_GAS", bereich: "versorgung", farbe: "grün", linientyp: "VERS_GAS", quellenPlotstil: "mittelgrün0.25" }),
+      layer({ name: "BVER_GASHOCHDRUCKLEITUNG", bereich: "versorgung", farbe: "grün", linientyp: "VERS_GAS", quellenPlotstil: "mittelgrün0.25" }),
+      layer({ name: "BVER_HOCHSPANNUNG", bereich: "versorgung", farbe: "rot", linientyp: "Continuous", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_KABELKAN_SCHUTZR", bereich: "versorgung", farbe: "weiß", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BVER_KORROSIONSSCHUTZ", bereich: "versorgung", farbe: "35", linientyp: "VERS_NIEDERSPANNUNG", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_LEERROHR", bereich: "versorgung", farbe: "31", linientyp: "Continuous", quellenPlotstil: "schwarz0.25" }),
+      layer({ name: "BVER_LICHTWELLENLEITER", bereich: "versorgung", farbe: "30", linientyp: "VERS_TELEKOM", quellenPlotstil: "pink0.25" }),
+      layer({ name: "BVER_MITTELSPANNUNG", bereich: "versorgung", farbe: "rot", linientyp: "VERS_MITTELSPANNUNG", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_NIEDERSPANNUNG", bereich: "versorgung", farbe: "rot", linientyp: "VERS_NIEDERSPANNUNG", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_ROHRPOST", bereich: "versorgung", farbe: "30", linientyp: "CONTINIOUS", quellenPlotstil: "Farbe" }),
+      layer({ name: "BVER_SIGNALKABEL", bereich: "versorgung", farbe: "rot", linientyp: "CONTINIOUS", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_STEUERKABEL", bereich: "versorgung", farbe: "30", linientyp: "VERS_TELEKOM", quellenPlotstil: "rot0.25" }),
+      layer({ name: "BVER_TELEKOM", bereich: "versorgung", farbe: "gelb", linientyp: "VERS_TELEKOM", quellenPlotstil: "pink0.25" }),
+      layer({ name: "BVER_TRINKWASSER", bereich: "versorgung", farbe: "134", linientyp: "VERS_TRINKWASSER", quellenPlotstil: "mittelblau0.25" })
+    ];
+
+    // B – visuell aus Originalbildern abgelesen (Schreibweise unverändert)
+    const IMAGE_LAYERS = [
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_KANALACHSE_DRAINAGE", beschreibung: "Aus Bildern – Planung Drainage", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_LINE_DRAINAGE_KANAL", beschreibung: "Aus Bildern – Schreibweise LINE (nicht normalisiert)", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTNR_DRAINAGE", beschreibung: "Aus Bildern – Planung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_TEXT_DECK_SOHLE_DRAINAGE", beschreibung: "Aus Bildern – Planung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTBAUWERK_DRAINAGE", beschreibung: "Aus Bildern – Planung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_KANALACHSE_R", beschreibung: "Aus Bildern – Regenwasser Planung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_Linie_R_KANAL", beschreibung: "Aus Bildern – Schreibweise Linie (nicht normalisiert)", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_ROHRWANDUNG_R", beschreibung: "Aus Bildern – Planung R", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTNR_R", beschreibung: "Aus Bildern – Planung R", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_TEXT_DECK_SOHLE_R", beschreibung: "Aus Bildern – Planung R", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTBAUWERK_R", beschreibung: "Aus Bildern – Planung R", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_KANALACHSE_M", beschreibung: "Aus Bildern – Mischwasser Planung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_LINIE_M_KANAL", beschreibung: "Aus Bildern – Planung M", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_ROHRWANDUNG_M", beschreibung: "Aus Bildern – Planung M", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTNR_M", beschreibung: "Aus Bildern – Planung M", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_TEXT_DECK_SOHLE_M", beschreibung: "Aus Bildern – Planung M", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTBAUWERK_M", beschreibung: "Aus Bildern – Planung M", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_KANALACHSE_S", beschreibung: "Aus Bildern – Schmutzwasser Planung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_LINIE_S_KANAL", beschreibung: "Aus Bildern – Planung S", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_ROHRWANDUNG_S", beschreibung: "Aus Bildern – Planung S", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTNR_S", beschreibung: "Aus Bildern – Planung S", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_TEXT_DECK_SOHLE_S", beschreibung: "Aus Bildern – Planung S", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_SCHACHTBAUWERK_S", beschreibung: "Aus Bildern – Planung S", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_DRUCKLEITUNG", beschreibung: "Aus Bildern – Planung Druckleitung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_DRUCKLEITUNG_M", beschreibung: "Aus Bildern – Planung M", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_DRUCKLEITUNG_S", beschreibung: "Aus Bildern – Planung S", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_DRUCKLEITUNG_R", beschreibung: "Aus Bildern – Planung R", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_LINIE_SAUGLEITUNG_KAN", beschreibung: "Aus Bildern – Planung Saugleitung", quellenHinweis: "Bildquelle" }),
+      layer({ kategorie: "B", bereich: "kanal", name: "KANPL_LINIE_PUMPLEITUNG_KAN", beschreibung: "Aus Bildern – Planung Pumpleitung", quellenHinweis: "Bildquelle" })
+    ];
+
+    // C – vorgeschlagene Workshop-Struktur (Kanalarten, Planungs-Versorgung später, Blöcke)
+    const WORKSHOP_LAYERS = [
+      layer({ kategorie: "C", bereich: "kanal", name: "KANPL_ANSCHLUSSLEITUNG", beschreibung: "Workshop-Vorschlag – Planungs-Anschlussleitung (Analogie BKAN)", linientyp: "(OFFEN – im Workshop festlegen)" }),
+      layer({ kategorie: "C", bereich: "kanal", name: "KANPL_HAUSANSCHL", beschreibung: "Workshop-Vorschlag – Planungs-Hausanschluss", linientyp: "(OFFEN – im Workshop festlegen)" }),
+      layer({ kategorie: "C", bereich: "kanal", name: "KANPL_TEXT_HALTUNG_R", beschreibung: "Workshop-Vorschlag – Haltungsbeschriftung R (1:250 / 1:500 OFFEN)", linientyp: "Continuous" }),
+      layer({ kategorie: "C", bereich: "kanal", name: "KANPL_TEXT_HALTUNG_M", beschreibung: "Workshop-Vorschlag – Haltungsbeschriftung M", linientyp: "Continuous" }),
+      layer({ kategorie: "C", bereich: "kanal", name: "KANPL_TEXT_HALTUNG_S", beschreibung: "Workshop-Vorschlag – Haltungsbeschriftung S", linientyp: "Continuous" }),
+      layer({ kategorie: "C", bereich: "kanal", name: "KANPL_TEXT_HALTUNG_DRAINAGE", beschreibung: "Workshop-Vorschlag – Haltungsbeschriftung Drainage", linientyp: "Continuous" }),
+      layer({ kategorie: "C", bereich: "versorgung", name: "KVER_LEERROHR", beschreibung: "Workshop-Vorschlag – Planung Leerrohr (späterer Termin)", linientyp: "Continuous" }),
+      layer({ kategorie: "C", bereich: "versorgung", name: "KVER_GAS", beschreibung: "Workshop-Vorschlag – Planung Gas (späterer Termin)", linientyp: "VERS_GAS" }),
+      layer({ kategorie: "C", bereich: "versorgung", name: "KVER_TRINKWASSER", beschreibung: "Workshop-Vorschlag – Planung Trinkwasser (späterer Termin)", linientyp: "VERS_TRINKWASSER" }),
+      layer({ kategorie: "C", bereich: "versorgung", name: "KVER_FERNWÄRME-VOR", beschreibung: "Workshop-Vorschlag – Planung Fernwärme Vorlauf", linientyp: "CONTINIOUS" }),
+      layer({ kategorie: "C", bereich: "versorgung", name: "KVER_FERNWÄRME-RÜCK", beschreibung: "Workshop-Vorschlag – Planung Fernwärme Rücklauf", linientyp: "CONTINIOUS" }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_PFahneRegen", beschreibung: "Block Planung – PFahneRegen (Referenz, kein Zeichenlayer)", linientyp: "Continuous", plot: false }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_PFahneSchmutz", beschreibung: "Block Planung – PFahneSchmutz", linientyp: "Continuous", plot: false }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_PFahneMisch", beschreibung: "Block Planung – PFahneMisch", linientyp: "Continuous", plot: false }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_PfeilBlock", beschreibung: "Block Planung – PfeilBlock (Richtungspfeil)", linientyp: "Continuous", plot: false }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_BFahneRegen", beschreibung: "Block Bestand – BFahneRegen", linientyp: "Continuous", plot: false }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_BFahneSchmutz", beschreibung: "Block Bestand – BFahneSchmutz", linientyp: "Continuous", plot: false }),
+      layer({ kategorie: "C", bereich: "sonst", name: "BLOCK_BFahneMisch", beschreibung: "Block Bestand – BFahneMisch", linientyp: "Continuous", plot: false })
+    ];
+
+    // D – explizit OFFEN / im Workshop zu klären
+    const OPEN_LAYERS = [
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Schriftgröße_Text_1:250", beschreibung: "Schriftgrößen 1:250 – noch nicht festgelegt", linientyp: "(OFFEN – im Workshop festlegen)", massstab: "1:250", plot: false }),
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Schriftgröße_Text_1:500", beschreibung: "Schriftgrößen 1:500 – noch nicht festgelegt", linientyp: "(OFFEN – im Workshop festlegen)", massstab: "1:500", plot: false }),
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Klassisches_Design_Bestand", beschreibung: "Klassisches Design Bestand = OFFEN", plot: false }),
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Klassisches_Design_Planung", beschreibung: "Klassisches Design Planung = OFFEN", plot: false }),
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Standard_vs_RMS_Darstellung", beschreibung: "Standarddarstellung oder R/M/S-differenziert = OFFEN", plot: false }),
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Layernamen_Normalisierung", beschreibung: "Verbindliche Normalisierung inkonsistenter Namen = OFFEN", plot: false }),
+      layer({ kategorie: "D", bereich: "kanal", name: "(OFFEN) Text_Pflichtfelder_Reihenfolge", beschreibung: "Textinhalte, Reihenfolge, Pflichtfelder = OFFEN", plot: false })
+    ];
+
+    let layers = [];
+    let filteredIndices = [];
+
+    function initLayers() {
+      layers = [...SOURCE_LAYERS, ...IMAGE_LAYERS, ...WORKSHOP_LAYERS, ...OPEN_LAYERS].map((l, i) => ({
+        ...l,
+        id: i,
+        plotstil: l.quellenPlotstil === "Normal" ? "Normal" : l.plotstil
+      }));
+    }
+
+    function aciToHex(colorStr) {
+      if (!colorStr) return "#cccccc";
+      const named = {
+        rot: "#ff0000", grün: "#00ff00", gruen: "#00ff00", gelb: "#ffff00",
+        magenta: "#ff00ff", weiß: "#ffffff", weiss: "#ffffff", schwarz: "#000000"
+      };
+      const lower = String(colorStr).toLowerCase();
+      if (named[lower]) return named[lower];
+      const rgb = colorStr.match(/^(\d+)\s*,\s*(\d+)\s*,\s*(\d+)$/);
+      if (rgb) {
+        const r = Math.min(255, +rgb[1]);
+        const g = Math.min(255, +rgb[2]);
+        const b = Math.min(255, +rgb[3]);
+        return "#" + [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("");
+      }
+      const aci = parseInt(colorStr, 10);
+      if (!isNaN(aci) && aci >= 1 && aci <= 255) {
+        const palette = {
+          1: "#ff0000", 2: "#ffff00", 3: "#00ff00", 4: "#00ffff", 5: "#0000ff",
+          6: "#ff00ff", 7: "#ffffff", 8: "#808080", 9: "#c0c0c0", 10: "#ff0000",
+          11: "#ff7f7f", 20: "#ff3f3f", 21: "#ff5f5f", 30: "#ff9f00", 31: "#ffbf00",
+          35: "#ffaf00", 40: "#bfbf00", 41: "#afaf00", 50: "#7f7f00", 51: "#9f9f00",
+          52: "#8f8f00", 60: "#007f00", 120: "#00bf00", 130: "#00afaf", 131: "#00afbf",
+          134: "#0080ff", 140: "#00a0ff", 161: "#7f00ff", 200: "#bf00ff", 211: "#df00ff",
+          224: "#efefef", 255: "#ffffff"
+        };
+        return palette[aci] || `hsl(${(aci * 37) % 360}, 55%, 50%)`;
+      }
+      return "#dddddd";
+    }
+
+    function boolSelect(id, val, field) {
+      return `<select data-id="${id}" data-field="${field}">
+        <option value="true" ${val ? "selected" : ""}>Ja</option>
+        <option value="false" ${!val ? "selected" : ""}>Nein</option>
+      </select>`;
+    }
+
+    function optionList(items, selected, allowCustom) {
+      const set = new Set(items);
+      if (selected && !set.has(selected)) set.add(selected);
+      let html = [...set].map(v =>
+        `<option value="${escapeAttr(v)}" ${v === selected ? "selected" : ""}>${escapeHtml(v)}</option>`
+      ).join("");
+      if (allowCustom) html += `<option value="__custom__">… eigener Wert</option>`;
+      return html;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    function getFilters() {
+      return {
+        kategorie: document.getElementById("filterKategorie").value,
+        bereich: document.getElementById("filterBereich").value,
+        search: document.getElementById("searchInput").value.trim().toLowerCase()
+      };
+    }
+
+    function applyFilters() {
+      const f = getFilters();
+      filteredIndices = layers.map((l, i) => i).filter(i => {
+        const l = layers[i];
+        if (f.kategorie !== "alle" && l.kategorie !== f.kategorie) return false;
+        if (f.bereich !== "alle" && l.bereich !== f.bereich) return false;
+        if (f.search && !l.name.toLowerCase().includes(f.search) && !(l.beschreibung || "").toLowerCase().includes(f.search)) return false;
+        return true;
+      });
+    }
+
+    function renderTable() {
+      applyFilters();
+      const tbody = document.getElementById("layerBody");
+      tbody.innerHTML = filteredIndices.map(i => {
+        const l = layers[i];
+        const rowClass = l.kategorie === "D" ? "row-d" : l.kategorie === "C" ? "row-c" : l.kategorie === "B" ? "row-b" : "";
+        const badgeClass = `badge badge-${l.kategorie.toLowerCase()}`;
+        const hex = aciToHex(l.farbe);
+        const ref = l.quellenHinweis || (l.quellenPlotstil ? `Quelle Plotstil: ${l.quellenPlotstil}` : "");
+        return `<tr class="${rowClass}" data-id="${i}">
+          <td><span class="${badgeClass}">${l.kategorie}</span></td>
+          <td><input type="text" data-id="${i}" data-field="status" value="${escapeAttr(l.status)}" placeholder="—"></td>
+          <td class="name-cell">
+            <input type="text" data-id="${i}" data-field="name" value="${escapeAttr(l.name)}">
+            ${ref ? `<span class="ref">${escapeHtml(ref)}</span>` : ""}
+          </td>
+          <td>${boolSelect(i, l.ein, "ein")}</td>
+          <td>${boolSelect(i, l.frieren, "frieren")}</td>
+          <td>${boolSelect(i, l.sperre, "sperre")}</td>
+          <td>${boolSelect(i, l.plot, "plot")}</td>
+          <td>
+            <div class="color-row">
+              <span class="color-preview" style="background:${hex}" title="Vorschau"></span>
+              <input type="text" data-id="${i}" data-field="farbe" value="${escapeAttr(l.farbe)}" placeholder="ACI / RGB / Name">
+            </div>
+          </td>
+          <td><select data-id="${i}" data-field="linientyp">${optionList(LINE_TYPES, l.linientyp, true)}</select></td>
+          <td><select data-id="${i}" data-field="linienstaerke">${optionList(LINE_WEIGHTS, l.linienstaerke, true)}</select></td>
+          <td>
+            <select data-id="${i}" data-field="massstab">
+              <option value="1:250" ${l.massstab === "1:250" ? "selected" : ""}>1:250</option>
+              <option value="1:500" ${l.massstab === "1:500" ? "selected" : ""}>1:500</option>
+              <option value="beide" ${l.massstab === "beide" ? "selected" : ""}>beide</option>
+            </select>
+          </td>
+          <td><input type="text" data-id="${i}" data-field="beschreibung" value="${escapeAttr(l.beschreibung)}"></td>
+          <td><input type="number" min="0" max="90" data-id="${i}" data-field="transparenz" value="${l.transparenz}"></td>
+          <td>${boolSelect(i, l.vpFrieren, "vpFrieren")}</td>
+          <td><select data-id="${i}" data-field="plotstil">${optionList(PLOTSTILE, l.plotstil, false)}</select></td>
+          <td><span class="ref">${escapeHtml(l.quellenPlotstil || "—")}</span></td>
+        </tr>`;
+      }).join("");
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const kanal = layers.filter(l => l.bereich === "kanal" && l.kategorie !== "D");
+      const vers = layers.filter(l => l.bereich === "versorgung");
+      const done = layers.filter(l => l.farbe && l.linientyp && l.name && !l.linientyp.includes("OFFEN"));
+      document.getElementById("progressText").textContent =
+        `${done.length}/${layers.length} bearbeitet · Kanal: ${kanal.length} · Versorgung: ${vers.length}`;
+    }
+
+    function handleChange(e) {
+      const t = e.target;
+      const id = +t.dataset.id;
+      const field = t.dataset.field;
+      if (isNaN(id) || !field) return;
+
+      let val;
+      if (t.type === "checkbox") val = t.checked;
+      else if (["ein", "frieren", "sperre", "plot", "vpFrieren"].includes(field)) val = t.value === "true";
+      else if (field === "transparenz") val = +t.value;
+      else val = t.value;
+
+      if (field === "linientyp" && val === "__custom__") {
+        const custom = prompt("Eigener Linientyp:");
+        if (custom) {
+          layers[id].linientyp = custom;
+          if (!LINE_TYPES.includes(custom)) LINE_TYPES.push(custom);
+        }
+        renderTable();
+        return;
+      }
+
+      layers[id][field] = val;
+
+      if (field === "farbe") {
+        const row = t.closest("tr");
+        const preview = row.querySelector(".color-preview");
+        if (preview) preview.style.background = aciToHex(val);
+      }
+      updateProgress();
+      autoSave();
+    }
+
+    function rowsForExport() {
+      const globalMs = document.getElementById("globalMassstab").value;
+      return layers.map(l => {
+        const ms = l.massstab === "beide" ? globalMs === "beide" ? "1:250; 1:500" : globalMs : l.massstab;
+        return {
+          "Kategorie": l.kategorie,
+          "Status": l.status,
+          "Name": l.name,
+          "Ein": l.ein ? "Ja" : "Nein",
+          "Frieren": l.frieren ? "Ja" : "Nein",
+          "Sperre": l.sperre ? "Ja" : "Nein",
+          "Plot": l.plot ? "Ja" : "Nein",
+          "Farbe": l.farbe,
+          "Linientyp": l.linientyp,
+          "Linienstärke": l.linienstaerke,
+          "Maßstab": ms,
+          "Beschreibung": l.beschreibung,
+          "Transparenz": l.transparenz,
+          "Frieren in neuen Ansichtsfenstern": l.vpFrieren ? "Ja" : "Nein",
+          "Plotstil": l.plotstil,
+          "Quellen-Plotstil (Referenz)": l.quellenPlotstil || ""
+        };
+      });
+    }
+
+    function exportXlsx() {
+      const data = rowsForExport();
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Layereigenschaften");
+      const ts = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, `Kanal_Workshop_Layereigenschaften_${ts}.xlsx`);
+    }
+
+    function exportCsv() {
+      const data = rowsForExport();
+      const headers = Object.keys(data[0]);
+      const sep = ";";
+      const lines = [
+        headers.join(sep),
+        ...data.map(row => headers.map(h => {
+          const v = String(row[h] ?? "").replace(/"/g, '""');
+          return `"${v}"`;
+        }).join(sep))
+      ];
+      const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Kanal_Workshop_Layereigenschaften_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+    }
+
+    const STORAGE_KEY = "kanal-workshop-layers-v1";
+
+    function autoSave() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ layers, savedAt: new Date().toISOString() }));
+      } catch (_) { /* ignore */ }
+    }
+
+    function manualSave() {
+      autoSave();
+      alert("Workshop-Stand im Browser gespeichert.");
+    }
+
+    function manualLoad() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) { alert("Kein gespeicherter Stand gefunden."); return; }
+        const parsed = JSON.parse(raw);
+        if (parsed.layers && parsed.layers.length) {
+          layers = parsed.layers;
+          renderTable();
+          alert("Gespeicherter Stand geladen (" + (parsed.savedAt || "") + ").");
+        }
+      } catch (e) {
+        alert("Laden fehlgeschlagen: " + e.message);
+      }
+    }
+
+    function resetAll() {
+      if (!confirm("Alle Eingaben auf Quellwerte zurücksetzen? Gespeicherter Browser-Stand wird überschrieben.")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      initLayers();
+      renderTable();
+    }
+
+    document.getElementById("layerBody").addEventListener("change", handleChange);
+    document.getElementById("layerBody").addEventListener("input", e => {
+      if (e.target.dataset.field === "farbe" || e.target.dataset.field === "name" || e.target.dataset.field === "beschreibung" || e.target.dataset.field === "status") {
+        handleChange(e);
+      }
+    });
+    ["filterKategorie", "filterBereich", "searchInput"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderTable);
+      document.getElementById(id).addEventListener("change", renderTable);
+    });
+    document.getElementById("btnExportXlsx").addEventListener("click", exportXlsx);
+    document.getElementById("btnExportCsv").addEventListener("click", exportCsv);
+    document.getElementById("btnSave").addEventListener("click", manualSave);
+    document.getElementById("btnLoad").addEventListener("click", manualLoad);
+    document.getElementById("btnReset").addEventListener("click", resetAll);
+
+    initLayers();
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.layers && parsed.layers.length === layers.length) layers = parsed.layers;
+      }
+    } catch (_) { /* use defaults */ }
+    renderTable();
+  </script>
+</body>
+</html>
