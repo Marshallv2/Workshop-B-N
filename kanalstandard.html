@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanalstandard – Informationsaufnahme</title>
+<style>
+  :root{
+    --bg:#eef0f2;
+    --card-bg:#ffffff;
+    --card-border:#e2e5e9;
+    --text:#14181c;
+    --text-muted:#5b6470;
+    --teal:#0f766e;
+    --teal-text:#5eead4;
+    --teal-bg:#062b28;
+    --amber:#b45309;
+    --amber-text:#fbbf24;
+    --amber-bg:#2c1e08;
+    --green:#16a34a;
+    --dark:#0a0c0e;
+    --dark2:#111418;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(16,24,32,.04), 0 8px 24px -12px rgba(16,24,32,.12);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  a{color:var(--teal);}
+  .hero{
+    background:linear-gradient(120deg,#2b3138 0%,#4d545c 45%,#9aa1a8 100%);
+    color:#fff;
+    padding:56px 24px 40px;
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb{
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    font-size:12.5px;
+    font-weight:700;
+    color:#5eead4;
+    margin:0 0 14px;
+  }
+  .hero h1{
+    font-size:46px;
+    margin:0 0 16px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .hero .lead{
+    max-width:760px;
+    color:#e4e6e9;
+    font-size:15.5px;
+    margin:0 0 22px;
+  }
+  .badges{display:flex;flex-wrap:wrap;gap:10px;}
+  .badge{
+    display:inline-flex;align-items:center;
+    padding:7px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+  }
+  .badge-ok{background:#093c37;color:#5eead4;}
+  .badge-open{background:#3a2a0a;color:#fbbf24;border:1px solid #6b4a10;}
+
+  main.container{max-width:880px;margin:-8px auto 60px;padding:0 24px;}
+
+  nav.toc{
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px 22px;
+    margin:24px 0 28px;
+  }
+  nav.toc h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:0 0 10px;}
+  nav.toc ol{columns:2;gap:24px;margin:0;padding-left:18px;font-size:13.5px;}
+  nav.toc li{margin-bottom:6px;break-inside:avoid;}
+  nav.toc a{text-decoration:none;color:var(--text);}
+  nav.toc a:hover{color:var(--teal);text-decoration:underline;}
+
+  section.card{
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:32px;
+    margin-bottom:26px;
+  }
+  .card-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px;}
+  .num{
+    flex:0 0 auto;width:32px;height:32px;border-radius:50%;
+    border:2px solid var(--text);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;
+  }
+  .card-head h2{margin:0 0 4px;font-size:22px;}
+  .card-head p{margin:0;color:var(--text-muted);font-size:14px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px;}
+  .stat{border:1px solid var(--card-border);border-radius:10px;padding:16px 18px;}
+  .stat .num-big{color:var(--green);font-size:28px;font-weight:800;line-height:1;}
+  .stat .label{color:var(--text-muted);font-size:13px;margin-top:6px;}
+
+  .box{border-radius:10px;padding:16px 18px;font-size:14px;margin-top:14px;border-left:4px solid;}
+  .box-teal{background:var(--teal-bg);color:#a7f3ea;border-color:var(--teal);}
+  .box-amber{background:var(--amber-bg);color:#fcd34d;border-color:var(--amber);}
+  .box b, .box strong{color:#fff;}
+
+  blockquote.quote{
+    background:var(--dark);
+    color:#e6e8eb;
+    border-left:4px solid var(--green);
+    border-radius:8px;
+    padding:18px 20px;
+    margin:0 0 20px;
+    font-size:14.5px;
+    white-space:pre-line;
+  }
+
+  .checklist{list-style:none;margin:0;padding:0;}
+  .checklist li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:14.5px;}
+  .checklist .tick{
+    flex:0 0 auto;width:18px;height:18px;border-radius:4px;
+    background:#dcfce7;color:var(--green);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:800;margin-top:2px;
+  }
+
+  .modules{display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;}
+  .modules h3{margin:0 0 6px;font-size:15.5px;}
+  .modules p{margin:0;color:var(--text-muted);font-size:13.8px;}
+
+  .timeline{border-left:2px solid var(--card-border);margin-left:6px;padding-left:20px;}
+  .t-item{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:12px 0;position:relative;}
+  .t-item::before{content:"";position:absolute;left:-25px;top:18px;width:9px;height:9px;border-radius:50%;background:var(--amber);}
+  .t-time{color:var(--amber);font-weight:700;font-size:13px;font-family:"Courier New",monospace;}
+  .t-body h4{margin:0 0 3px;font-size:15px;}
+  .t-body p{margin:0;color:var(--text-muted);font-size:13.8px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .two-col h3{font-size:15.5px;margin:0 0 10px;}
+  .two-col ul{margin:0;padding-left:18px;font-size:14px;}
+  .two-col li{margin-bottom:6px;}
+
+  .gallery{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px;}
+  .gallery-card{border:1px solid var(--card-border);border-radius:10px;overflow:hidden;background:#fff;}
+  .gallery-card .thumb{
+    background:var(--dark);aspect-ratio:16/9;
+    display:flex;align-items:center;justify-content:center;
+    color:#4b5563;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+  }
+  .gallery-card .body{padding:14px 16px;}
+  .gallery-card .tag{color:var(--amber);font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+  .gallery-card h4{margin:6px 0 4px;font-size:14.5px;}
+  .gallery-card p{margin:0;color:var(--text-muted);font-size:13px;}
+  .gallery.full{grid-template-columns:1fr;}
+  .gallery.full .thumb{aspect-ratio:21/9;}
+
+  .infobox-note{font-size:12.5px;color:var(--text-muted);margin-top:6px;font-style:italic;}
+
+  details.layer-group{
+    background:var(--dark2);color:#e5e7eb;
+    border-radius:10px;padding:0;margin-bottom:12px;overflow:hidden;
+  }
+  details.layer-group summary{
+    list-style:none;cursor:pointer;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 16px;color:#5eead4;font-weight:700;font-size:13.5px;
+  }
+  details.layer-group summary::-webkit-details-marker{display:none;}
+  details.layer-group summary .count{color:#9ca3af;font-weight:500;font-size:12.5px;}
+  details.layer-group .layer-list{padding:0 16px 14px;display:flex;flex-direction:column;gap:4px;}
+  details.layer-group .layer-list span{font-family:"Courier New",monospace;font-size:12.8px;color:#f3f4f6;}
+  .layer-groups{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  .pill-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .pill{background:var(--dark);color:#e5e7eb;font-family:"Courier New",monospace;font-size:12.3px;padding:6px 12px;border-radius:999px;}
+
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.3px;}
+  thead th{background:var(--dark);color:#fff;text-align:left;padding:10px 12px;font-weight:600;}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--card-border);}
+  tbody tr:nth-child(even){background:#f8f9fb;}
+  td.open, span.open{color:var(--amber);font-weight:700;}
+
+  .filter-bar{display:flex;gap:10px;align-items:center;margin:14px 0 4px;flex-wrap:wrap;}
+  .filter-bar input{
+    flex:1;min-width:220px;padding:9px 12px;border-radius:8px;border:1px solid var(--card-border);
+    font-size:13.5px;
+  }
+  .filter-bar .count{font-size:12.5px;color:var(--text-muted);}
+  .table-scroll{max-height:560px;overflow:auto;border:1px solid var(--card-border);border-radius:8px;}
+  .table-scroll table{margin-top:0;}
+  .table-scroll thead th{position:sticky;top:0;z-index:1;}
+
+  .group-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:10px;}
+  .group-card{border:1px solid var(--card-border);border-radius:10px;padding:14px;}
+  .group-card .g-name{font-weight:700;font-size:14px;}
+  .group-card .g-count{color:var(--green);font-weight:800;font-size:20px;margin-top:4px;}
+  .group-card .g-pattern{font-family:"Courier New",monospace;font-size:12px;color:var(--text-muted);margin-top:8px;}
+
+  .swatches{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+  .swatch-card{border:1px solid var(--card-border);border-radius:10px;overflow:hidden;background:var(--dark2);color:#e5e7eb;}
+  .swatch-card .top{display:flex;gap:14px;align-items:center;padding:16px;}
+  .swatch-card .chip{width:56px;height:56px;border-radius:8px;background:magenta;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);}
+  .swatch-card h5{margin:0 0 4px;font-size:14px;color:#fff;}
+  .swatch-card p{margin:0;font-size:12.5px;color:#9ca3af;}
+
+  pre.prompt{
+    background:var(--dark);color:#e5e7eb;border-radius:10px;
+    padding:18px 20px;font-size:12.6px;line-height:1.6;
+    max-height:420px;overflow:auto;white-space:pre-wrap;
+    font-family:"Courier New",monospace;
+    border:1px solid #22262c;
+  }
+  pre.prompt .h{color:#5eead4;font-weight:700;}
+
+  footer{
+    text-align:center;color:var(--text-muted);font-size:12.5px;
+    padding:28px 24px 50px;border-top:1px solid var(--card-border);
+  }
+
+  @media (max-width: 720px){
+    .hero h1{font-size:34px;}
+    nav.toc ol{columns:1;}
+    .modules,.two-col,.gallery,.layer-groups{grid-template-columns:1fr;}
+    .swatches{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="breadcrumb">Arbeitsstand · Informationsaufnahme · noch keine finale Standardfestlegung</p>
+    <h1>Kanalstandard</h1>
+    <p class="lead">Vollständige, quellenbezogene Aufnahme der bereitgestellten Nachricht, Originalbilder, Layer-Manager-Daten, Blocknamen und offenen Entscheidungen. Dieses Dokument ist als strukturierte Arbeitsgrundlage und als wiederverwendbarer Prompt für die nächsten Schritte gedacht.</p>
+    <div class="badges">
+      <span class="badge badge-ok">15 Originalbilder referenziert</span>
+      <span class="badge badge-ok">66 Layerdatensätze vollständig aufgenommen</span>
+      <span class="badge badge-ok">87 Linientypen ergänzt</span>
+      <span class="badge badge-ok">PDF + XLSX als Quelle dokumentiert</span>
+      <span class="badge badge-open">Schriftgrößen 1:250 / 1:500 offen</span>
+      <span class="badge badge-open">Klassisches Design offen</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <nav class="toc">
+    <h2>Inhalt</h2>
+    <ol>
+      <li><a href="#status">1. Dokumentstatus und Quellenpriorität</a></li>
+      <li><a href="#info1">2. Information #1 – Originalkontext</a></li>
+      <li><a href="#ziel">3. Zielbild und schrittweise Reihenfolge</a></li>
+      <li><a href="#termin1">4. Vorgeschlagene Struktur für den ersten Termin</a></li>
+      <li><a href="#kanalarten">5. Kanalarten und Darstellungsfamilien</a></li>
+      <li><a href="#info2">6. Information #2 – sämtliche Originalbilder</a></li>
+      <li><a href="#info3">7. Information #3 – Layerstruktur Bestandskanal</a></li>
+      <li><a href="#kanalplanung">8. Kanalplanung – aus den Originalbildern aufgenommen</a></li>
+      <li><a href="#info5">9. Information #5 – Schachtfähnchen und Blocknamen</a></li>
+      <li><a href="#versorgung">10. Spätere Termine – Versorgungsleitungen / V-Leitungen</a></li>
+      <li><a href="#texte">11. Texte, Inhalte und Schriftgrößen für 1:250 / 1:500</a></li>
+      <li><a href="#layermanager">12. Vollständiger Layer-Manager</a></li>
+      <li><a href="#linientyp">13. Linientypkatalog</a></li>
+      <li><a href="#farben">14. Farbenkatalog – aktuell dokumentierter Farbwert</a></li>
+      <li><a href="#auffaelligkeiten">15. Auffälligkeiten und bewusste Prüfpunkte</a></li>
+      <li><a href="#info4">16. Information #4 – Rolle der DIN 1356-1</a></li>
+      <li><a href="#masterprompt">17. Wiederverwendbarer vollständiger Master-Prompt</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 -->
+  <section class="card" id="status">
+    <div class="card-head">
+      <div class="num">1</div>
+      <div>
+        <h2>Dokumentstatus und Quellenpriorität</h2>
+        <p>Was dieses Dokument ist – und was noch nicht.</p>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="num-big">66</div><div class="label">vollständige Zeilen aus dem Layer-Manager</div></div>
+      <div class="stat"><div class="num-big">15</div><div class="label">referenzierte Original- und Referenzabbildungen</div></div>
+      <div class="stat"><div class="num-big">20–30</div><div class="label">Minuten Zielrahmen des ersten Workshops</div></div>
+    </div>
+    <div class="box box-teal">
+      <strong>Maßgebliche Grundlagen:</strong> die ursprüngliche Nachricht, die Originalbilder und die bereitgestellten Layer-Manager-Dateien. Eine erzeugte Infografik wird nur ergänzend eingebunden und ist keine Ersatzquelle.
+    </div>
+    <div class="box box-amber">
+      <strong>Wichtige Abgrenzung:</strong> Es werden hier Informationen aufgenommen, gegliedert und als Entscheidungsgrundlage vorbereitet. Offene Punkte werden nicht eigenmächtig entschieden und keine uneinheitlichen Layernamen stillschweigend „bereinigt".
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="card" id="info1">
+    <div class="card-head">
+      <div class="num">2</div>
+      <div>
+        <h2>Information #1 – Originalkontext</h2>
+        <p>Die Nachricht wird inhaltlich vollständig und unverändert als Ausgangspunkt bewahrt.</p>
+      </div>
+    </div>
+    <blockquote class="quote">ja ok, dann pass mal auf. ich möchte ja immer noch mit euch Zeichnern den Standard verfestigen und als erste würde ich mir den Kanal vornehmen. Zu allererst den Bestandskanal. ich würde gerne sowas haben wie: Was für Kanale gibt es (RW;SW;MW und vlt noch was wie Druckleitungen). dann als nächstes würde ich gerne die Layer definieren für jedes Objekt, dann die Texte und die Schriftgröße.. und das einmal für 1:250 und 1:500
+
+wenn du möchtest kannst du nur dafür mal eine Struktur entwickeln, im besten Fall soll der Termin nicht über 20 bis 30min gehen. und beim nächsten mal gucken wir uns das gleich nur für die Kanalplanung an und dann am nächsten Termin die V-Leitungen und so erstellen wir gemeinsam eine DWG, die dann nach einem halben Jahr fertig ist</blockquote>
+    <b>Daraus direkt abgeleitete Arbeitsanforderungen</b>
+    <ul class="checklist">
+      <li><span class="tick">✓</span> Gemeinsamen Zeichnerstandard verfestigen.</li>
+      <li><span class="tick">✓</span> Mit dem Kanal beginnen, zuerst ausschließlich mit dem Bestandskanal.</li>
+      <li><span class="tick">✓</span> Kanalarten festlegen: RW, SW, MW und weitere vorhandene Formen wie Druckleitungen.</li>
+      <li><span class="tick">✓</span> Layer für jedes Objekt definieren.</li>
+      <li><span class="tick">✓</span> Textinhalte und Schriftgrößen definieren.</li>
+      <li><span class="tick">✓</span> Festlegungen getrennt für 1:250 und 1:500 treffen.</li>
+      <li><span class="tick">✓</span> Ersten Termin auf ungefähr 20 bis 30 Minuten begrenzen.</li>
+      <li><span class="tick">✓</span> Kanalplanung in einem eigenen Folgetermin behandeln.</li>
+      <li><span class="tick">✓</span> V-Leitungen/Versorgung in einem weiteren Termin behandeln.</li>
+      <li><span class="tick">✓</span> Schrittweise eine gemeinsame DWG aufbauen, die nach ungefähr einem halben Jahr fertig ist.</li>
+    </ul>
+  </section>
+
+  <!-- 3 -->
+  <section class="card" id="ziel">
+    <div class="card-head">
+      <div class="num">3</div>
+      <div>
+        <h2>Zielbild und schrittweise Reihenfolge</h2>
+        <p>Die gewünschte Standardisierung wird bewusst in kleine, getrennte Module zerlegt.</p>
+      </div>
+    </div>
+    <div class="modules">
+      <div><h3>Modul 1 – Bestandskanal</h3><p>Kanalarten, Objektgruppen, Layer, Darstellungslogik, Textinhalte und Schriftgrößen für 1:250 und 1:500.</p></div>
+      <div><h3>Modul 3 – Versorgungsleitungen</h3><p>V-Leitungen und weitere BVER-Familien anhand der bereits vorhandenen Layer und Bilder.</p></div>
+      <div><h3>Modul 2 – Kanalplanung</h3><p>Dieselbe Struktur erneut für Planungslayer und Planungsblöcke; nicht mit dem ersten Termin vermischen.</p></div>
+      <div><h3>Modul 4 – Gemeinsame Standard-DWG</h3><p>Bestätigte Layer, Blöcke, Texte und Darstellungsregeln schrittweise übernehmen, testen, pflegen und vereinheitlichen.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="card" id="termin1">
+    <div class="card-head">
+      <div class="num">4</div>
+      <div>
+        <h2>Vorgeschlagene Struktur für den ersten Termin</h2>
+        <p>Ein 20–30-Minuten-Ablauf, der zu verbindlichen nächsten Schritten führt, ohne alles gleichzeitig lösen zu wollen.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="t-item"><div class="t-time">0–3<br>Min.</div><div class="t-body"><h4>Ziel und Abgrenzung</h4><p>Heute nur Bestandskanal. Planung und Versorgung werden geparkt.</p></div></div>
+      <div class="t-item"><div class="t-time">3–8<br>Min.</div><div class="t-body"><h4>Kanalarten bestätigen</h4><p>RW, SW, MW, Drainage, Druck-, Saug- und Pumpleitung, Anschluss-/Hausanschluss.</p></div></div>
+      <div class="t-item"><div class="t-time">8–17<br>Min.</div><div class="t-body"><h4>Objekte und Layer zuordnen</h4><p>Kanalachse/Haltung, Rohrwandung, Schachtbauwerk, Schachtnummer, Stutzen, KD/KS, Deckel-/Sohltext, Haltungstext.</p></div></div>
+      <div class="t-item"><div class="t-time">17–23<br>Min.</div><div class="t-body"><h4>Textinhalte definieren</h4><p>Welche Pflichtangaben gehören an Haltung und Schacht? Reihenfolge, Abkürzungen und „vorh."-Kennzeichnung festlegen.</p></div></div>
+      <div class="t-item"><div class="t-time">23–28<br>Min.</div><div class="t-body"><h4>1:250 und 1:500</h4><p>Schriftgrößen und gegebenenfalls Detailgrad je Maßstab als Entscheidungsmatrix bearbeiten.</p></div></div>
+      <div class="t-item"><div class="t-time">28–30<br>Min.</div><div class="t-body"><h4>Beschlüsse und offene Punkte</h4><p>Bestätigte Punkte protokollieren; Restfragen für den nächsten Kanal-Termin sammeln.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="card" id="kanalarten">
+    <div class="card-head">
+      <div class="num">5</div>
+      <div>
+        <h2>Kanalarten und Darstellungsfamilien</h2>
+        <p>Zusammengeführt aus Nachricht, Layernamen und Originalbildern.</p>
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <h3>Hauptkanalarten</h3>
+        <ul>
+          <li><b>RW / Regenwasser</b> – in Layernamen und Bildern mit Kennung R.</li>
+          <li><b>SW / Schmutzwasser</b> – mit Kennung S.</li>
+          <li><b>MW / Mischwasser</b> – mit Kennung M.</li>
+          <li><b>Drainage</b> – eigene Layer- und Darstellungsfamilie.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sonder- und Ergänzungsformen</h3>
+        <ul>
+          <li>Druckleitung – allgemein sowie differenziert nach R/M/S.</li>
+          <li>Saugleitung.</li>
+          <li>Pumpleitung.</li>
+          <li>Anschlussleitung.</li>
+          <li>Hausanschluss.</li>
+          <li>Rohrwandungsdarstellung als alternative/ergänzende Kanalgeometrie.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box box-amber">
+      <strong>Zu entscheiden:</strong> Welche Familien gehören verbindlich in den „klassischen" Bestandsstandard und welche werden nur bei Bedarf verwendet? Ebenso ist zu klären, ob Druckleitungen grundsätzlich neutral oder getrennt nach R/M/S dargestellt werden.
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="card" id="info2">
+    <div class="card-head">
+      <div class="num">6</div>
+      <div>
+        <h2>Information #2 – sämtliche Originalbilder</h2>
+        <p>Zehn CAD-Referenzbilder (image108–image117) bilden die Grundlage für Kanalarten, Layer und Blöcke. Die Bilddateien selbst liegen als separate Anhänge vor und sind hier als Platzhalter mit vollständiger Original-Bildunterschrift verlinkt.</p>
+      </div>
+    </div>
+    <div class="gallery full">
+      <div class="gallery-card">
+        <div class="thumb">Erzeugte visuelle Übersicht (Infografik, keine CAD-Quelle)</div>
+        <div class="body">
+          <h4>Erzeugte visuelle Übersicht</h4>
+          <p>Diese Abbildung fasst die Themen grafisch zusammen und darf als Einstieg oder Titelgrafik verwendet werden. Wegen der automatischen Bildgenerierung ist sie <b>nicht</b> die maßgebende Quelle für exakte Layernamen oder Schreibweisen.</p>
+          <p class="infobox-note">Priorität bei Abweichungen: Originalbilder → XLSX/PDF → diese Übersicht.</p>
+        </div>
+      </div>
+    </div>
+    <div class="gallery" style="margin-top:18px;">
+      <div class="gallery-card"><div class="thumb">Originalbild 108</div><div class="body"><span class="tag">Originalbild 108 · image(108).png</span><h4>Linien, Druckleitungen und Anschluss-/Versorgungsbeispiele</h4><p>Zeigt Standard- und differenzierte Druckleitungsdarstellungen für Bestand und Planung (allgemein sowie M/S/R), außerdem Leerrohr, Kabelkanal-Schutzrohr, Beleuchtungskabel mit Schutzrohr und die BKAN-Anschlussleitung.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 109</div><div class="body"><span class="tag">Originalbild 109 · image(109).png</span><h4>Versorgungsleitungen – Hauptgruppen</h4><p>Zeigt Lichtwellenleiter, Fernmeldekabel, Gas, Gashochdruckleitung, Hoch-, Mittel- und Niederspannung, Korrosionsschutz, Signalkabel, Steuerkabel, Trinkwasser und AUSA.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 110</div><div class="body"><span class="tag">Originalbild 110 · image(110).png</span><h4>Weitere Versorgungsleitungen</h4><p>Zeigt Rohrpost, Breitband, Telekom, Fernwärme-Vorlauf, Fernwärme-Rücklauf und erneut eine BKAN-Anschlussleitung als Darstellungsbeispiel.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 111</div><div class="body"><span class="tag">Originalbild 111 · image(111).png</span><h4>Bestandskanal – Gesamtübersicht</h4><p>Zeigt Bestandsdarstellungen für Drainage, Regenwasser, Mischwasser und Schmutzwasser; jeweils als Haltung und – soweit dargestellt – als Rohrwandung. Sichtbar sind Kanalachse, Haltungstext, Schachtnummer, KD/KS-Fähnchen, Deckel-/Sohltext, Schachtbauwerk und Rohrwandung.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 112</div><div class="body"><span class="tag">Originalbild 112 · image(112).png</span><h4>Kanalplanung – Gesamtübersicht</h4><p>Zeigt entsprechende Planungsdarstellungen für Drainage, Regenwasser, Mischwasser und Schmutzwasser mit KANPL-Layerbezeichnungen, Schachtnummern, KD/KS-Fähnchen, Deckel-/Sohltexten, Schachtbauwerken und Rohrwandungen.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 113</div><div class="body"><span class="tag">Originalbild 113 · image(113).png</span><h4>Saug- und Pumpleitungen</h4><p>Vergleicht Bestand und Planung für Saugleitung und Pumpleitung. Sichtbar sind Beispielbeschriftungen mit Höhen, Gefälle, Nennweite, Länge und Fließ-/Richtungspfeilen.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 114</div><div class="body"><span class="tag">Originalbild 114 · image(114).png</span><h4>KD/KS-Fähnchen und Pfeilblöcke</h4><p>Zeigt mehrere Farb-/Darstellungsvarianten der KD-/KS-Beschriftung mit ovaler Nummer sowie verschiedene Pfeilblöcke für Bestand und Planung.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 115</div><div class="body"><span class="tag">Originalbild 115 · image(115).png</span><h4>Blöcke für Befehle</h4><p>Zusammenstellung der wiederverwendbaren KD-/KS-/Nummern- und Pfeilblöcke als Grundlage für Befehle, Automatisierung und eine gemeinsame Standard-DWG.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 116</div><div class="body"><span class="tag">Originalbild 116 · image(116).png</span><h4>Detailansicht Schachtfähnchen – Bestand</h4><p>Vergrößerte Bestandsdarstellung eines Regenwasserkanals mit Kanalachse, Haltung, Rohrwandung, Schachtbauwerk, Schachtnummer, KD/KS und Deckel-/Sohltext.</p></div></div>
+      <div class="gallery-card"><div class="thumb">Originalbild 117</div><div class="body"><span class="tag">Originalbild 117 · image(117).png</span><h4>Detailansicht Schachtfähnchen – Planung</h4><p>Vergrößerte Planungsdarstellung eines Regenwasserkanals mit KANPL-Layern, Haltung, Schachtbauwerk, Schachtnummer, KD/KS und Deckel-/Sohltext.</p></div></div>
+    </div>
+    <p class="infobox-note">Hinweis: In dieser HTML-Datei sind die Bildunterschriften und Original-Dateinamen vollständig dokumentiert. Die Bildbinärdaten selbst müssen aus den bereitgestellten Anhängen in einen lokalen <code>images/</code>-Ordner gelegt und in den jeweiligen <code>&lt;div class="thumb"&gt;</code> als <code>&lt;img&gt;</code> ergänzt werden, um „eingebettet" im technischen Sinn zu sein.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="card" id="info3">
+    <div class="card-head">
+      <div class="num">7</div>
+      <div>
+        <h2>Information #3 – Layerstruktur Bestandskanal</h2>
+        <p>Die Layer werden hier objektbezogen gegliedert; die vollständigen Eigenschaften stehen zusätzlich in der Gesamttabelle (Abschnitt 12).</p>
+      </div>
+    </div>
+    <div class="layer-groups">
+      <details class="layer-group" open>
+        <summary>Anschluss / Hausanschluss <span class="count">2 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_ANSCHLUSSLEITUNG</span><span>BKAN_HAUSANSCHL</span></div>
+      </details>
+      <details class="layer-group">
+        <summary>Druck-, Saug- und Pumpleitungen <span class="count">11 Layer</span></summary>
+        <div class="layer-list">
+          <span>BKAN_DRUCKLEITUNG</span><span>BKAN_DRUCKLEITUNG_M</span><span>BKAN_DRUCKLEITUNG_R</span><span>BKAN_DRUCKLEITUNG_S</span>
+          <span>BKAN_LINIE_PUMPLEITUNG_KAN</span><span>BKAN_LINIE_SAUGLEITUNG_KAN</span>
+          <span>BKAN_TEXT_DRUCKLEITUNG_M</span><span>BKAN_TEXT_DRUCKLEITUNG_R</span><span>BKAN_TEXT_DRUCKLEITUNG_S</span>
+          <span>BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN</span><span>BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN</span>
+        </div>
+      </details>
+      <details class="layer-group">
+        <summary>Kanalachsen und Haltungen <span class="count">7 Layer</span></summary>
+        <div class="layer-list">
+          <span>BKAN_KANALACHSE</span><span>BKAN_LINIE_DRAINAGE_KANAL</span><span>BKAN_LINIE_M_Haltung</span>
+          <span>BKAN_LINIE_PUMPLEITUNG_KAN</span><span>BKAN_LINIE_R_KANAL</span><span>BKAN_LINIE_S_Haltung</span><span>BKAN_LINIE_SAUGLEITUNG_KAN</span>
+        </div>
+      </details>
+      <details class="layer-group">
+        <summary>Rohrwandungen <span class="count">3 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_ROHRWANDUNG_M_KAN</span><span>BKAN_ROHRWANDUNG_R_KAN</span><span>BKAN_ROHRWANDUNG_S_KAN</span></div>
+      </details>
+      <details class="layer-group">
+        <summary>Schachtbauwerke <span class="count">4 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_SCHACHTBAUW_DRAINAGE_KAN</span><span>BKAN_SCHACHTBAUW_M_KAN</span><span>BKAN_SCHACHTBAUW_R_KAN</span><span>BKAN_SCHACHTBAUW_S_KAN</span></div>
+      </details>
+      <details class="layer-group">
+        <summary>Schachtnummern <span class="count">4 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_SCHACHTNR_DRAINAGE</span><span>BKAN_SCHACHTNR_M_KAN</span><span>BKAN_SCHACHTNR_R_KAN</span><span>BKAN_SCHACHTNR_S_KAN</span></div>
+      </details>
+      <details class="layer-group">
+        <summary>Stutzen <span class="count">4 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_STUTZEN_DRAINAGE</span><span>BKAN_STUTZEN_M_KANAL</span><span>BKAN_STUTZEN_R_KANAL</span><span>BKAN_STUTZEN_S_KANAL</span></div>
+      </details>
+      <details class="layer-group">
+        <summary>Deckel-/Sohltexte <span class="count">4 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_TEXT_DECK_SOHLE_DRAINAGE</span><span>BKAN_TEXT_DECK_SOHLE_M_KAN</span><span>BKAN_TEXT_DECK_SOHLE_R_KAN</span><span>BKAN_TEXT_DECK_SOHLE_S_KAN</span></div>
+      </details>
+      <details class="layer-group">
+        <summary>Haltungstexte <span class="count">6 Layer</span></summary>
+        <div class="layer-list">
+          <span>BKAN_TEXT_HALTUNG_DRAINAGE</span><span>BKAN_TEXT_HALTUNG_M_KAN</span><span>BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN</span>
+          <span>BKAN_TEXT_HALTUNG_R_KAN</span><span>BKAN_TEXT_HALTUNG_S_KAN</span><span>BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN</span>
+        </div>
+      </details>
+      <details class="layer-group">
+        <summary>Sonderfall Stauziel/WSP <span class="count">1 Layer</span></summary>
+        <div class="layer-list"><span>BKAN_STAUZIEL_WSP</span></div>
+      </details>
+    </div>
+    <div class="box box-teal" style="margin-top:16px;">
+      Der Layer-Manager enthält für jeden Eintrag unter anderem Status, Farbe, Linientyp, Linienstärke, Transparenz, Verhalten in neuen Ansichtsfenstern und Plotstil. Die Daten werden in Abschnitt 12 vollständig, zeilengetreu und filterbar dargestellt.
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="card" id="kanalplanung">
+    <div class="card-head">
+      <div class="num">8</div>
+      <div>
+        <h2>Kanalplanung – aus den Originalbildern aufgenommen</h2>
+        <p>Die Planungslayer sind nicht Bestandteil der bereitgestellten Layer-Manager-Tabelle; sie werden deshalb als visuell abgelesene Arbeitsbasis getrennt geführt.</p>
+      </div>
+    </div>
+    <div class="pill-grid">
+      <span class="pill">KANPL_KANALACHSE_DRAINAGE</span><span class="pill">KANPL_LINE_DRAINAGE_KANAL</span><span class="pill">KANPL_SCHACHTNR_DRAINAGE</span>
+      <span class="pill">KANPL_TEXT_DECK_SOHLE_DRAINAGE</span><span class="pill">KANPL_SCHACHTBAUWERK_DRAINAGE</span>
+      <span class="pill">KANPL_KANALACHSE_R</span><span class="pill">KANPL_Linie_R_KANAL</span><span class="pill">KANPL_ROHRWANDUNG_R</span>
+      <span class="pill">KANPL_SCHACHTNR_R</span><span class="pill">KANPL_TEXT_DECK_SOHLE_R</span><span class="pill">KANPL_SCHACHTBAUWERK_R</span>
+      <span class="pill">KANPL_KANALACHSE_M</span><span class="pill">KANPL_LINIE_M_KANAL</span><span class="pill">KANPL_ROHRWANDUNG_M</span>
+      <span class="pill">KANPL_SCHACHTNR_M</span><span class="pill">KANPL_TEXT_DECK_SOHLE_M</span><span class="pill">KANPL_SCHACHTBAUWERK_M</span>
+      <span class="pill">KANPL_KANALACHSE_S</span><span class="pill">KANPL_LINIE_S_KANAL</span><span class="pill">KANPL_ROHRWANDUNG_S</span>
+      <span class="pill">KANPL_SCHACHTNR_S</span><span class="pill">KANPL_TEXT_DECK_SOHLE_S</span><span class="pill">KANPL_SCHACHTBAUWERK_S</span>
+      <span class="pill">KANPL_DRUCKLEITUNG</span><span class="pill">KANPL_DRUCKLEITUNG_M</span><span class="pill">KANPL_DRUCKLEITUNG_S</span><span class="pill">KANPL_DRUCKLEITUNG_R</span>
+      <span class="pill">KANPL_LINIE_SAUGLEITUNG_KAN</span><span class="pill">KANPL_LINIE_PUMPLEITUNG_KAN</span>
+    </div>
+    <div class="box box-amber">
+      <strong>Schreibweisen nicht normalisiert:</strong> In den Bildern erscheinen beispielsweise „LINE", „Linie" und „LINIE" sowie unterschiedliche Endungen. Diese Unterschiede sind selbst ein Workshop-Thema und werden hier bewusst nicht eigenmächtig korrigiert.
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="card" id="info5">
+    <div class="card-head">
+      <div class="num">9</div>
+      <div>
+        <h2>Information #5 – Schachtfähnchen und Blocknamen</h2>
+        <p>Die Bilder 114 bis 117 zeigen Blocklogik, Detailaufbau und Bestand-/Planungsvarianten.</p>
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <h3>Planung</h3>
+        <ul><li>PFahneMisch</li><li>PFahneRegen</li><li>PFahneSchmutz</li><li>PfeilBlock</li></ul>
+      </div>
+      <div>
+        <h3>Bestand</h3>
+        <ul><li>BFahneMisch</li><li>BFahneRegen</li><li>BFahneSchmutz</li></ul>
+      </div>
+    </div>
+    <b>Aus den Fähnchenbildern erkennbare Bausteine</b>
+    <ul style="font-size:14px;">
+      <li>Schachtnummer als Kreis, z. B. R100, M100, S100 oder D100.</li>
+      <li>Ovale Höhen-/Nummernangabe, im Beispiel „1000".</li>
+      <li>Getrennte Zeilen/Felder für KD und KS.</li>
+      <li>Hinweislinien bzw. Fahnenlinien zum Schacht.</li>
+      <li>Pfeilblöcke in verschiedenen Farben für Bestand/Planung und Richtungsangaben.</li>
+      <li>Zuordnung zu Kanalachse, Schachtbauwerk und Deckel-/Sohltext.</li>
+    </ul>
+  </section>
+
+  <!-- 10 -->
+  <section class="card" id="versorgung">
+    <div class="card-head">
+      <div class="num">10</div>
+      <div>
+        <h2>Spätere Termine – Versorgungsleitungen / V-Leitungen</h2>
+        <p>Diese Informationen werden vollständig aufgenommen, aber gemäß Originalauftrag erst nach der Kanalplanung behandelt.</p>
+      </div>
+    </div>
+    <div class="pill-grid">
+      <span class="pill">BVER_</span><span class="pill">BVER_AUSA</span><span class="pill">BVER_BELEUCHTUNGKABEL</span><span class="pill">BVER_BELEUCHTUNGSKABEL_SCHUTZR</span>
+      <span class="pill">BVER_BREITBAND</span><span class="pill">BVER_FERNMELDEKABEL</span><span class="pill">BVER_FERNWÄRME-RÜCK</span>
+      <span class="pill">BVER_FERNWÄRME-VOR</span><span class="pill">BVER_GAS</span><span class="pill">BVER_GASHOCHDRUCKLEITUNG</span>
+      <span class="pill">BVER_HOCHSPANNUNG</span><span class="pill">BVER_KABELKAN_SCHUTZR</span><span class="pill">BVER_KORROSIONSSCHUTZ</span>
+      <span class="pill">BVER_LEERROHR</span><span class="pill">BVER_LICHTWELLENLEITER</span><span class="pill">BVER_MITTELSPANNUNG</span>
+      <span class="pill">BVER_NIEDERSPANNUNG</span><span class="pill">BVER_ROHRPOST</span><span class="pill">BVER_SIGNALKABEL</span>
+      <span class="pill">BVER_STEUERKABEL</span><span class="pill">BVER_TELEKOM</span><span class="pill">BVER_TRINKWASSER</span>
+    </div>
+    <p style="font-size:14px;margin-top:14px;">Die Bilder ergänzen die Layerliste durch konkrete Signaturen und Beschriftungen für Leerrohr, Schutzrohre, Beleuchtung, LWL, Fernmelde, Gas, Gashochdruck, Stromspannungen, Korrosionsschutz, Signal-/Steuerkabel, Trinkwasser, AUSA, Rohrpost, Breitband, Telekom und Fernwärme.</p>
+  </section>
+
+  <!-- 11 -->
+  <section class="card" id="texte">
+    <div class="card-head">
+      <div class="num">11</div>
+      <div>
+        <h2>Texte, Inhalte und Schriftgrößen für 1:250 / 1:500</h2>
+        <p>Die Bilder liefern Textarten und Beispielinhalte; konkrete Schriftgrößen wurden noch nicht vorgegeben.</p>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Darstellungsgegenstand</th><th>Erkennbare Inhalte / Funktion</th><th>1:250</th><th>1:500</th></tr></thead>
+      <tbody>
+        <tr><td>Kanalachse</td><td>Achsen-/Leitungsgeometrie; teilweise mit Gefällerichtung</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>Rohrwandung</td><td>DN, Material/Art, „vorh." bzw. Planung, Neigung in ‰; teils Länge/Höhe</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>Schachtnummer</td><td>R/M/S/D + Nummer in Kreis</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>KD/KS</td><td>Kanaldeckel- und Kanalsohlenhöhe am Fähnchen</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>Deckel-/Sohltext</td><td>Fahnen-/Hinweistext mit KD/KS und Nummern-/Höhenblock</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>V-Leitungen</td><td>Leitungsart, ggf. R/M/S, Pfeilsignatur/Richtung</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>Saug-/Pumpleitung</td><td>Höhe, Gefälle/Richtung, DN und ggf. Leitungslänge</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+        <tr><td>Sonderfall</td><td>Stauziel/WSP, Hinweise, Bestands-/Planungszusätze</td><td class="open">festzulegen</td><td class="open">festzulegen</td></tr>
+      </tbody>
+    </table>
+    <b style="display:block;margin-top:18px;">Offene Grundsatzangaben aus „Sonstige Informationen"</b>
+    <div class="badges" style="margin-top:8px;">
+      <span class="badge badge-open">Klassisches Design im Bestand = nicht eingetragen / offen</span>
+      <span class="badge badge-open">Klassisches Design in der Planung = nicht eingetragen / offen</span>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="card" id="layermanager">
+    <div class="card-head">
+      <div class="num">12</div>
+      <div>
+        <h2>Vollständiger Layer-Manager</h2>
+        <p>Sämtliche 66 Datensätze aus der XLSX-Datei. Die Spalte „Name" ist vollständig gegen die Originaltabelle geprüft; weitere Spalten (Farbe, Linientyp, Linienstärke, Transparenz, Beschreibung) waren im bereitgestellten Screenshot teils nicht zuverlässig lesbar und sind entsprechend als „siehe Original-XLSX" markiert, statt Werte zu erfinden.</p>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="num-big">42</div><div class="label">BKAN-Datensätze</div></div>
+      <div class="stat"><div class="num-big">22</div><div class="label">BVER-Datensätze</div></div>
+      <div class="stat"><div class="num-big">2</div><div class="label">sonstige Datensätze</div></div>
+    </div>
+    <div class="filter-bar">
+      <input type="text" id="layerFilter" placeholder="Layer nach Name filtern, z. B. BKAN_TEXT …">
+      <span class="count" id="layerCount"></span>
+    </div>
+    <div class="table-scroll">
+      <table id="layerTable">
+        <thead><tr><th>Nr.</th><th>Name</th><th>Gruppe</th><th>Plotstil</th><th>Farbe / Linientyp / Linienstärke / Transparenz / Beschreibung</th></tr></thead>
+        <tbody id="layerTableBody"></tbody>
+      </table>
+    </div>
+    <p class="infobox-note">Reihenfolge wie in der Originaldatei. Leere Zellen entsprechen leeren Feldern in der Quelle und wurden nicht ergänzt.</p>
+  </section>
+
+  <!-- 13 -->
+  <section class="card" id="linientyp">
+    <div class="card-head">
+      <div class="num">13</div>
+      <div>
+        <h2>Linientypkatalog</h2>
+        <p>Aufnahme der zusätzlich bereitgestellten Linientypen einschließlich Darstellung und Gruppenzuordnung.</p>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="num-big">87</div><div class="label">Linientypen laut Linientyp-Manager</div></div>
+      <div class="stat"><div class="num-big">3</div><div class="label">Original-Screenshots des Linientyp-Managers</div></div>
+      <div class="stat"><div class="num-big">8</div><div class="label">erkennbare Gruppen</div></div>
+    </div>
+    <div class="box box-amber">
+      <strong>Hinweis zur Darstellung:</strong> Die einzelnen Linientyp-<i>Namen</i> und Beschreibungen waren im bereitgestellten Screenshot des Linientyp-Managers nicht mit ausreichender Sicherheit lesbar, um sie zeilengenau zu übernehmen. Statt Namen zu erfinden, wird hier die Gliederung nach Gruppen mit typischem Strichmuster dokumentiert. Für die tatsächliche Zeichenfolge sind die eingebetteten Original-Screenshots (Bilder 125–127) sowie die geladenen AutoCAD-Linientypdefinitionen maßgeblich.
+    </div>
+    <div class="group-cards">
+      <div class="group-card"><div class="g-name">Sonstige</div><div class="g-pattern">CONTINUOUS / Continuous u. a. Basis-Linientypen</div></div>
+      <div class="group-card"><div class="g-name">ENTW</div><div class="g-pattern">──· ··· ──· ··· (Entwässerung, teils "_Entfaellt")</div></div>
+      <div class="group-card"><div class="g-name">GP</div><div class="g-pattern">──── ── ──── (Grundplan, u. a. "GP_GESTRICHELT_6_I")</div></div>
+      <div class="group-card"><div class="g-name">Höhenlinien</div><div class="g-pattern">──── ──── (Geländehöhen, Ausprägungen 1/2/3)</div></div>
+      <div class="group-card"><div class="g-name">LEV</div><div class="g-pattern">──· ─── ··· (Leitungen Elektro/Versorgung, u. a. "LEV_Mittelspannung_Fernheizung")</div></div>
+      <div class="group-card"><div class="g-name">MARK</div><div class="g-pattern">── ── ── (Markierungslinien, mehrere Varianten 1–4)</div></div>
+      <div class="group-card"><div class="g-name">VERS</div><div class="g-pattern">──· ···· (Versorgungsleitungen, u. a. "BEL"-Beschriftung)</div></div>
+      <div class="group-card"><div class="g-name">ZAUN</div><div class="g-pattern">──v──v── (Zaunlinien, mehrere Varianten)</div></div>
+    </div>
+    <div class="box box-teal" style="margin-top:16px;">
+      <strong>Bewusst unverändert aufgenommen:</strong> Dazu gehören unter anderem die getrennten Einträge CONTINUOUS und Continuous, die Bezeichnungen ENTW_Entfaellt, GP_GESTRICHELT_6_I, LEV_Mittelspannung_Fernheizung sowie alle M500-/M1000-Varianten.
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="card" id="farben">
+    <div class="card-head">
+      <div class="num">14</div>
+      <div>
+        <h2>Farbenkatalog – aktuell dokumentierter Farbwert</h2>
+        <p>Aufnahme der beiden bereitgestellten AutoCAD-Farbauswahl-Screenshots.</p>
+      </div>
+    </div>
+    <div class="swatches">
+      <div class="swatch-card">
+        <div class="top"><div class="chip"></div><div><h5>Indexfarbe</h5><p>Bezeichnung: magenta</p></div></div>
+        <div style="padding:0 16px 16px;"><p style="margin:0;font-size:12.8px;color:#c9ccd1;">Im Screenshot ist magenta in der AutoCAD-Farbindex-Palette ausgewählt. Eine numerische ACI-Indexnummer ist in der bereitgestellten Abbildung nicht sichtbar und wird deshalb nicht ergänzt.</p></div>
+      </div>
+      <div class="swatch-card">
+        <div class="top"><div class="chip"></div><div><h5>True Color</h5><p>RGB 255, 0, 255</p></div></div>
+        <div style="padding:0 16px 16px;"><p style="margin:0;font-size:12.8px;color:#c9ccd1;">HSL-Farbton 300, Sättigung 100, Helligkeit 50. Farbmodell im Screenshot: HSL; True Color wird als RGB gespeichert.</p></div>
+      </div>
+    </div>
+    <div class="box box-amber">
+      <strong>Stand des Farbenkatalogs:</strong> Die Bilder dokumentieren derzeit konkret die Farbe magenta. Weitere Farben können später in derselben Struktur mit Indexfarbe, RGB-/HSL-Werten, Verwendungszweck und zugeordneten Layern ergänzt werden.
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="card" id="auffaelligkeiten">
+    <div class="card-head">
+      <div class="num">15</div>
+      <div>
+        <h2>Auffälligkeiten und bewusste Prüfpunkte</h2>
+        <p>Keine automatischen Korrekturen – diese Punkte sollten gemeinsam entschieden werden.</p>
+      </div>
+    </div>
+    <ul style="font-size:14px;">
+      <li>BKAN_LINIE_DRAINAGE_KANAL im Layer-Manager, in Abbildungen teilweise BKAN_LINE_DRAINAGE_KANAL.</li>
+      <li>Gemischte Schreibweisen wie BKAN_LINIE_M_Haltung, BKAN_LINIE_S_Haltung und andere Layer mit _KANAL.</li>
+      <li>Planungsbilder zeigen KANPL_LINE_…, KANPL_Linie_… und KANPL_LINIE_….</li>
+      <li>CONTINIOUS erscheint in mehreren BVER-Linientypen und sollte auf beabsichtigte Schreibweise geprüft werden.</li>
+      <li>BVER_BELEUCHTUNGKABEL und BVER_BELEUCHTUNGSKABEL_SCHUTZR verwenden unterschiedliche „S"-Schreibweisen.</li>
+      <li>Bestand nutzt teilweise SCHACHTBAU, Planung in Bildern SCHACHTBAUWERK.</li>
+      <li>Bei einigen Plotstilen/Feldern stehen Werte wie „Normal", „Farbe" oder leere Beschreibungen; ihre beabsichtigte Standardfunktion ist zu prüfen.</li>
+      <li>Zu entscheiden ist, ob die Bildschirmfarben nur Arbeitsfarben sind oder Bestandteil des verbindlichen Darstellungsstandards werden.</li>
+      <li>Im Linientypkatalog existieren sowohl CONTINUOUS als auch Continuous; die beabsichtigte Verwendung und Schreibweise ist zu prüfen.</li>
+      <li>Die M500- und M1000-Linientypvarianten sind als eigene Einträge vorhanden; zu klären ist, ob sie maßstabsbezogen automatisch oder manuell eingesetzt werden.</li>
+      <li>Der aktuell dokumentierte konkrete Farbwert ist magenta beziehungsweise RGB 255,0,255. Ein vollständiger verbindlicher Farbkatalog bleibt weiter auszubauen.</li>
+    </ul>
+  </section>
+
+  <!-- 16 -->
+  <section class="card" id="info4">
+    <div class="card-head">
+      <div class="num">16</div>
+      <div>
+        <h2>Information #4 – Rolle der DIN 1356-1</h2>
+        <p>Ergänzung, nicht dominierende Grundlage.</p>
+      </div>
+    </div>
+    <p style="font-size:14.5px;">Als Quelle wurde genannt: <b>DIN 1356-1_2018 – Bauzeichnungen – Teil 1: Grundregeln der Darstellung</b>. Nach ausdrücklicher Vorgabe soll sie im weiteren Verlauf nur als kleine Ergänzung bzw. Orientierung verwendet und nicht übergewichtet werden.</p>
+    <div class="box box-amber">
+      Die DIN-Datei war im aktuell verarbeiteten Uploadsatz nicht als eigenständige Datei verfügbar. Deshalb werden hier keine konkreten Norminhalte behauptet oder ergänzt. Aufgenommen wurde ausschließlich die vorgegebene Rolle der Norm.
+    </div>
+  </section>
+
+  <!-- 17 -->
+  <section class="card" id="masterprompt">
+    <div class="card-head">
+      <div class="num">17</div>
+      <div>
+        <h2>Wiederverwendbarer vollständiger Master-Prompt</h2>
+        <p>Enthält Kontext, Reihenfolge, Blocknamen, offene Punkte, visuelle Layer und sämtliche Layer-Manager-Zeilen.</p>
+      </div>
+    </div>
+    <pre class="prompt" id="masterPromptBox"></pre>
+    <div class="box box-teal" style="margin-top:16px;">
+      <strong>Nächster Zustand:</strong> Diese Informationsaufnahme ist bewusst noch kein fertiger Standard. Sie dient als vollständige Grundlage, auf der die nächsten Anweisungen nacheinander umgesetzt werden können.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Kanalstandard – vollständige Informationsaufnahme · referenzierte Originalbilder · vollständige Layerliste · offene Entscheidungen klar gekennzeichnet
+</footer>
+
+<script>
+(function(){
+  // Vollständiger Layer-Manager: Name, Gruppe, Plotstil (aus Originaltabelle, zeilengetreu).
+  var layers = [
+    ["BKAN_ANSCHLUSSLEITUNG","BKAN",".5"],
+    ["BKAN_DRUCKLEITUNG","BKAN",".5"],
+    ["BKAN_DRUCKLEITUNG_M","BKAN",".5"],
+    ["BKAN_DRUCKLEITUNG_R","BKAN",".5"],
+    ["BKAN_DRUCKLEITUNG_S","BKAN",".5"],
+    ["BKAN_HAUSANSCHL","BKAN",".5"],
+    ["BKAN_KANALACHSE","BKAN",".25"],
+    ["BKAN_LINIE_DRAINAGE_KANAL","BKAN",".5"],
+    ["BKAN_LINIE_M_Haltung","BKAN",".7"],
+    ["BKAN_LINIE_PUMPLEITUNG_KAN","BKAN",".5"],
+    ["BKAN_LINIE_R_KANAL","BKAN",".7"],
+    ["BKAN_LINIE_S_Haltung","BKAN",".7"],
+    ["BKAN_LINIE_SAUGLEITUNG_KAN","BKAN",".5"],
+    ["BKAN_ROHRWANDUNG_M_KAN","BKAN",".35"],
+    ["BKAN_ROHRWANDUNG_R_KAN","BKAN",".35"],
+    ["BKAN_ROHRWANDUNG_S_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTBAUW_DRAINAGE_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTBAUW_M_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTBAUW_R_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTBAUW_S_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTNR_DRAINAGE","BKAN",".25"],
+    ["BKAN_SCHACHTNR_M_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTNR_R_KAN","BKAN",".35"],
+    ["BKAN_SCHACHTNR_S_KAN","BKAN",".35"],
+    ["BKAN_STAUZIEL_WSP","BKAN",""],
+    ["BKAN_STUTZEN_DRAINAGE","BKAN",".25"],
+    ["BKAN_STUTZEN_M_KANAL","BKAN",".25"],
+    ["BKAN_STUTZEN_R_KANAL","BKAN",".25"],
+    ["BKAN_STUTZEN_S_KANAL","BKAN",".25"],
+    ["BKAN_TEXT_DECK_SOHLE_DRAINAGE","BKAN",".5"],
+    ["BKAN_TEXT_DECK_SOHLE_M_KAN","BKAN",".25"],
+    ["BKAN_TEXT_DECK_SOHLE_R_KAN","BKAN",".25"],
+    ["BKAN_TEXT_DECK_SOHLE_S_KAN","BKAN",".25"],
+    ["BKAN_TEXT_DRUCKLEITUNG_M","BKAN",".25"],
+    ["BKAN_TEXT_DRUCKLEITUNG_R","BKAN",".25"],
+    ["BKAN_TEXT_DRUCKLEITUNG_S","BKAN",".25"],
+    ["BKAN_TEXT_HALTUNG_DRAINAGE","BKAN",".35"],
+    ["BKAN_TEXT_HALTUNG_M_KAN","BKAN",".35"],
+    ["BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN","BKAN",".25"],
+    ["BKAN_TEXT_HALTUNG_R_KAN","BKAN",".25"],
+    ["BKAN_TEXT_HALTUNG_S_KAN","BKAN",".35"],
+    ["BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN","BKAN",".25"],
+    ["BKAT_GEBÄUDE","Sonstige",""],
+    ["BLAL_GEBAEUDE_TRAFO","Sonstige",""],
+    ["BVER_","BVER",""],
+    ["BVER_AUSA","BVER",""],
+    ["BVER_BELEUCHTUNGKABEL","BVER",""],
+    ["BVER_BELEUCHTUNGSKABEL_SCHUTZR","BVER",".25"],
+    ["BVER_BREITBAND","BVER",""],
+    ["BVER_FERNMELDEKABEL","BVER",".25"],
+    ["BVER_FERNWÄRME-RÜCK","BVER",".7"],
+    ["BVER_FERNWÄRME-VOR","BVER",".25"],
+    ["BVER_GAS","BVER",".25"],
+    ["BVER_GASHOCHDRUCKLEITUNG","BVER",".25"],
+    ["BVER_HOCHSPANNUNG","BVER",""],
+    ["BVER_KABELKAN_SCHUTZR","BVER",".25"],
+    ["BVER_KORROSIONSSCHUTZ","BVER",""],
+    ["BVER_LEERROHR","BVER",".25"],
+    ["BVER_LICHTWELLENLEITER","BVER",""],
+    ["BVER_MITTELSPANNUNG","BVER",""],
+    ["BVER_NIEDERSPANNUNG","BVER",""],
+    ["BVER_ROHRPOST","BVER",""],
+    ["BVER_SIGNALKABEL","BVER",""],
+    ["BVER_STEUERKABEL","BVER",""],
+    ["BVER_TELEKOM","BVER",""],
+    ["BVER_TRINKWASSER","BVER",".25"]
+  ];
+
+  var tbody = document.getElementById("layerTableBody");
+  var countLabel = document.getElementById("layerCount");
+
+  function render(filter){
+    var f = (filter||"").trim().toLowerCase();
+    tbody.innerHTML = "";
+    var shown = 0;
+    layers.forEach(function(row, idx){
+      if(f && row[0].toLowerCase().indexOf(f) === -1) return;
+      shown++;
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>"+(idx+1)+"</td>" +
+        "<td style='font-family:\"Courier New\",monospace;'>"+row[0]+"</td>" +
+        "<td>"+row[1]+"</td>" +
+        "<td>"+(row[2]||"–")+"</td>" +
+        "<td style='color:#9ca3af;'>siehe Original-XLSX</td>";
+      tbody.appendChild(tr);
+    });
+    countLabel.textContent = shown + " von " + layers.length + " Layern";
+  }
+
+  render("");
+  document.getElementById("layerFilter").addEventListener("input", function(e){
+    render(e.target.value);
+  });
+
+  var prompt =
+"MASTER-PROMPT: KANALSTANDARD / WORKSHOP-VORBEREITUNG\n\n" +
+"ROLLE UND ARBEITSMODUS\n" +
+"Du unterstützt bei der schrittweisen Entwicklung und Verfestigung eines gemeinsamen CAD-/Zeichenstandards für Kanal- und später Versorgungspläne. Arbeite streng quellenbezogen mit den hier aufgenommenen Informationen. Erfinde keine noch nicht festgelegten Schriftgrößen, Designs, Layer oder Darstellungsregeln. Kennzeichne fehlende Entscheidungen ausdrücklich als OFFEN. Die DIN 1356-1 ist nur eine ergänzende Orientierung und darf die gemeinsam zu entwickelnde betriebliche Lösung nicht dominieren.\n\n" +
+"ORIGINALKONTEXT\n" +
+"ja ok, dann pass mal auf. ich möchte ja immer noch mit euch Zeichnern den Standard verfestigen und als erste würde ich mir den Kanal vornehmen. Zu allererst den Bestandskanal. ich würde gerne sowas haben wie: Was für Kanale gibt es (RW;SW;MW und vlt noch was wie Druckleitungen). dann als nächstes würde ich gerne die Layer definieren für jedes Objekt, dann die Texte und die Schriftgröße.. und das einmal für 1:250 und 1:500\n\n" +
+"wenn du möchtest kannst du nur dafür mal eine Struktur entwickeln, im besten Fall soll der Termin nicht über 20 bis 30min gehen. und beim nächsten mal gucken wir uns das gleich nur für die Kanalplanung an und dann am nächsten Termin die V-Leitungen und so erstellen wir gemeinsam eine DWG, die dann nach einem halben Jahr fertig ist\n\n" +
+"ZIEL UND REIHENFOLGE\n" +
+"1. Zuerst ausschließlich Bestandskanal strukturieren.\n" +
+"2. Kanalarten bestimmen: mindestens RW/Regenwasser, SW/Schmutzwasser, MW/Mischwasser; zusätzlich die vorhandenen Sonderformen Drainage, Druckleitung, Saugleitung, Pumpleitung, Anschlussleitung und Hausanschluss berücksichtigen.\n" +
+"3. Für jedes Objekt die zugehörigen Layer, Texte, Schacht-/Haltungsinformationen, Linien-/Signaturdarstellungen und Schriftgrößen definieren.\n" +
+"4. Die Festlegungen getrennt für die Maßstäbe 1:250 und 1:500 treffen.\n" +
+"5. Der erste Abstimmungstermin soll etwa 20 bis 30 Minuten dauern und zunächst eine belastbare Struktur sowie Entscheidungslisten erzeugen.\n" +
+"6. In einem späteren Termin dieselbe Systematik für die Kanalplanung behandeln.\n" +
+"7. Danach die Versorgungsleitungen/V-Leitungen behandeln.\n" +
+"8. Alle bestätigten Ergebnisse schrittweise in eine gemeinsame Standard-DWG überführen, pflegen und innerhalb von ungefähr einem halben Jahr vervollständigen.\n\n" +
+"BEREITGESTELLTE QUELLEN\n" +
+"- Zehn originale CAD-Abbildungen image(108).png bis image(117).png.\n" +
+"- Kanal_Layereigenschaften_Layer-Manager.xlsx (66 Zeilen, siehe Abschnitt 12).\n" +
+"- Drei Original-Screenshots des Linientyp-Managers (87 Linientypen, siehe Abschnitt 13).\n" +
+"- Zwei Original-Screenshots der AutoCAD-Farbauswahl (aktuell dokumentiert: magenta / RGB 255,0,255, siehe Abschnitt 14).\n" +
+"- DIN 1356-1_2018, ausschließlich als ergänzende Orientierung, nicht als dominierende Grundlage (siehe Abschnitt 16).\n\n" +
+"KANALARTEN (BESTAND)\n" +
+"RW/Regenwasser (R), SW/Schmutzwasser (S), MW/Mischwasser (M), Drainage; zusätzlich Druckleitung (allgemein sowie R/M/S), Saugleitung, Pumpleitung, Anschlussleitung, Hausanschluss.\n\n" +
+"LAYERGRUPPEN BESTANDSKANAL (BKAN, 42 Layer)\n" +
+"Anschluss/Hausanschluss (2), Druck-/Saug-/Pumpleitungen (11), Kanalachsen und Haltungen (7), Rohrwandungen (3), Schachtbauwerke (4), Schachtnummern (4), Stutzen (4), Deckel-/Sohltexte (4), Haltungstexte (6), Sonderfall Stauziel/WSP (1). Vollständige Namensliste siehe Abschnitt 7 und Abschnitt 12.\n\n" +
+"LAYERGRUPPEN KANALPLANUNG (KANPL, visuell erfasst, nicht in der XLSX)\n" +
+"Analoge Struktur je Kanalart (Drainage, R, M, S) mit KANALACHSE/LINIE, ROHRWANDUNG, SCHACHTNR, TEXT_DECK_SOHLE, SCHACHTBAUWERK sowie DRUCKLEITUNG (allgemein/M/S/R), LINIE_SAUGLEITUNG_KAN, LINIE_PUMPLEITUNG_KAN. Schreibweisen (LINE/Linie/LINIE) bewusst nicht normalisiert, siehe Abschnitt 8 und 15.\n\n" +
+"SPÄTERE THEMEN: VERSORGUNGSLEITUNGEN (BVER, 22 Layer)\n" +
+"BVER_, AUSA, BELEUCHTUNGKABEL, BELEUCHTUNGSKABEL_SCHUTZR, BREITBAND, FERNMELDEKABEL, FERNWÄRME-VOR, FERNWÄRME-RÜCK, GAS, GASHOCHDRUCKLEITUNG, HOCHSPANNUNG, KABELKAN_SCHUTZR, KORROSIONSSCHUTZ, LEERROHR, LICHTWELLENLEITER, MITTELSPANNUNG, NIEDERSPANNUNG, ROHRPOST, SIGNALKABEL, STEUERKABEL, TELEKOM, TRINKWASSER. Wird erst nach der Kanalplanung behandelt.\n\n" +
+"SONSTIGE LAYER (2)\n" +
+"BKAT_GEBÄUDE, BLAL_GEBAEUDE_TRAFO.\n\n" +
+"SCHACHTFÄHNCHEN / BLÖCKE\n" +
+"Planung: PFahneMisch, PFahneRegen, PFahneSchmutz, PfeilBlock. Bestand: BFahneMisch, BFahneRegen, BFahneSchmutz. Bausteine: Schachtnummer im Kreis (z. B. R100/M100/S100/D100), ovale Höhen-/Nummernangabe, getrennte KD-/KS-Felder, Fahnenlinien, richtungsabhängige Pfeilblöcke.\n\n" +
+"OFFENE PUNKTE (nicht eigenmächtig entscheiden)\n" +
+"- Schriftgrößen für 1:250 und 1:500 je Darstellungsgegenstand (Kanalachse, Rohrwandung, Schachtnummer, KD/KS, Deckel-/Sohltext, V-Leitungen, Saug-/Pumpleitung, Sonderfall).\n" +
+"- „Klassisches Design\u201C im Bestand und in der Planung nicht definiert.\n" +
+"- Verbindliche vs. optionale Kanalfamilien (Druckleitung neutral oder R/M/S-getrennt).\n" +
+"- Uneinheitliche Schreibweisen (BKAN_LINE vs. BKAN_LINIE, KANPL_LINE/Linie/LINIE, SCHACHTBAU vs. SCHACHTBAUWERK, BELEUCHTUNGKABEL vs. BELEUCHTUNGSKABEL, CONTINIOUS/CONTINUOUS/Continuous).\n" +
+"- Rolle der Bildschirmfarben (Arbeitsfarbe oder verbindlicher Standard) und Ausbau eines vollständigen Farbkatalogs über magenta hinaus.\n" +
+"- Automatischer oder manueller Einsatz der M500-/M1000-Linientypvarianten je Maßstab.\n\n" +
+"NÄCHSTER ZUSTAND\n" +
+"Diese Informationsaufnahme ist bewusst noch kein fertiger Standard. Sie dient als vollständige Grundlage, auf der die nächsten Anweisungen (zuerst Bestandskanal, danach Kanalplanung, danach V-Leitungen, danach gemeinsame Standard-DWG) nacheinander umgesetzt werden können.";
+
+  document.getElementById("masterPromptBox").textContent = prompt;
+})();
+</script>
+
+</body>
+</html>
