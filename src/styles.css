@@ -557,8 +557,12 @@ table.matrix td.scale { width: 130px; }
      Seitenbreite jenseits des Papiers und der klebende Kopf landet am
      Seitenende statt über den Zeilen. */
   .table-scroll { max-height: none; overflow: hidden; }
-  table.data { table-layout: fixed; font-size: 7.5pt; }
-  table.data th, table.data td { white-space: normal; overflow-wrap: anywhere; padding: 3px 4px; }
+  table.data { font-size: 7.5pt; }
+  table.data th, table.data td {
+    white-space: normal; overflow-wrap: break-word; hyphens: auto; padding: 3px 4px;
+  }
+  table.data th { vertical-align: bottom; }
+  #layermanager { break-before: page; }
   table.data thead { display: table-header-group; }
   table.data thead th { position: static; background: #eee; color: #000; }
   table.data tr { break-inside: avoid; }
