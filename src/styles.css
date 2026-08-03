@@ -361,7 +361,10 @@ main { padding: 28px 0 64px; display: grid; gap: 22px; }
   color: var(--panel-ink); font: 400 12.5px/1.4 var(--mono); word-break: break-all;
 }
 .chip--block { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-.chip--muted { color: var(--panel-ink-2); }
+.chip--muted {
+  background: transparent; border-style: dashed; border-color: var(--line);
+  color: var(--ink-2); font-family: var(--sans); font-size: 12.5px;
+}
 .chip[hidden] { display: none; }
 
 /* -------------------------------------------------------------- Tables -- */
@@ -404,7 +407,7 @@ table.data thead th {
 table.data tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.025); }
 table.data tbody tr:hover { background: rgba(74, 222, 128, 0.07); }
 table.data td.nr { color: var(--panel-ink-2); font-family: var(--mono); }
-table.data td.name { font-family: var(--mono); color: var(--panel-ink); white-space: normal; word-break: break-all; }
+table.data td.name { font-family: var(--mono); color: var(--panel-ink); }
 table.data td.pattern { font-family: var(--mono); letter-spacing: 0.04em; color: var(--panel-info); }
 .todo { color: var(--panel-open); font-family: var(--mono); }
 
@@ -529,6 +532,8 @@ table.matrix td.scale { width: 130px; }
 
 /* --------------------------------------------------------------- Print -- */
 
+@page { margin: 14mm 12mm; }
+
 @media print {
   :root {
     --page: #fff; --surface: #fff; --surface-2: #fff;
@@ -546,9 +551,26 @@ table.matrix td.scale { width: 130px; }
   .panel, .quote, table.data, .table-scroll { background: #fff !important; color: #000 !important; border-color: #999 !important; }
   .panel--group > summary, .module__title { color: #000; }
   .layer-list li, .chip, table.data, .quote p { color: #000 !important; }
-  .chip { background: #fff; border-color: #999; }
-  .table-scroll { max-height: none; overflow: visible; }
-  table.data thead th { background: #eee; color: #000; }
+  .chip { background: #fff; border-color: #999; white-space: normal; }
+
+  /* Ohne diese Regeln erzwingen die nicht umbrechenden Tabellenzellen eine
+     Seitenbreite jenseits des Papiers und der klebende Kopf landet am
+     Seitenende statt über den Zeilen. */
+  .table-scroll { max-height: none; overflow: hidden; }
+  table.data { table-layout: fixed; font-size: 7.5pt; }
+  table.data th, table.data td { white-space: normal; overflow-wrap: anywhere; padding: 3px 4px; }
+  table.data thead { display: table-header-group; }
+  table.data thead th { position: static; background: #eee; color: #000; }
+  table.data tr { break-inside: avoid; }
+  table.data td.pattern { letter-spacing: 0; }
+  .section { break-inside: auto; }
+  .figure, .decision, .stat, .module, .callout, .note-panel, .quote { break-inside: avoid; }
+
+  /* Chrome fragmentiert Grid-Container über Seitengrenzen unzuverlässig und
+     zeichnet Restelemente dann über nachfolgende Abschnitte. */
+  .checks, .timeline { display: block; }
+  .checks li { margin-bottom: 4pt; break-inside: avoid; }
+  .timeline__row { break-inside: avoid; }
   .prompt { max-height: none; background: #fff; color: #000; }
   details { display: block; }
   details > summary { list-style: none; }
