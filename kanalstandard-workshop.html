@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kanalstandard – HTML Workshop</title>
+<style>
+  :root {
+    --bg: #f3f5f7;
+    --surface: #ffffff;
+    --ink: #1a1f24;
+    --muted: #5c6670;
+    --line: #d7dde3;
+    --accent: #1f8a4c;
+    --accent-soft: #e7f6ee;
+    --warn-bg: #2a2118;
+    --warn-fg: #f0c27a;
+    --warn-edge: #e09a3e;
+    --info-bg: #121820;
+    --info-edge: #3db7c9;
+    --table-bg: #111418;
+    --table-head: #d9dee3;
+    --table-ink: #eef2f5;
+    --table-muted: #9aa5b1;
+    --badge-a: #1f6f8b;
+    --badge-b: #6b5b95;
+    --badge-c: #2d6a4f;
+    --badge-d: #9a3412;
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(16, 24, 32, 0.06);
+    --font: "Segoe UI", "Source Sans 3", "Helvetica Neue", sans-serif;
+    --mono: "Cascadia Code", "Consolas", "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background:
+      radial-gradient(1200px 500px at 10% -10%, #dfeff0 0%, transparent 55%),
+      radial-gradient(900px 400px at 100% 0%, #e8f3e9 0%, transparent 50%),
+      var(--bg);
+    line-height: 1.45;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 28px 20px 80px; }
+  .hero {
+    background: linear-gradient(135deg, #10231a 0%, #1a3a2c 45%, #0f2730 100%);
+    color: #f4faf6;
+    border-radius: 22px;
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -40px -60px auto;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(61,183,201,.25), transparent 70%);
+  }
+  .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -0.02em; }
+  .hero p { margin: 0; max-width: 70ch; color: #c7d8cf; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: .85rem;
+    color: #e6f2ec;
+  }
+  nav.toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: 18px 0 8px;
+  }
+  nav.toc a {
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: .86rem;
+  }
+  nav.toc a:hover { border-color: var(--accent); color: var(--accent); }
+  section.block {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-top: 18px;
+    box-shadow: var(--shadow);
+  }
+  .sec-head { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+  .num {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent);
+    font-weight: 700; flex: 0 0 auto;
+  }
+  .sec-head h2 { margin: 0; font-size: 1.25rem; }
+  .sec-head p { margin: 4px 0 0; color: var(--muted); }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+  }
+  .stat {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: #fff;
+  }
+  .stat strong {
+    display: block;
+    font-size: 1.8rem;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+  .stat span { color: var(--muted); font-size: .92rem; }
+  .callout {
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+    border-left: 4px solid var(--warn-edge);
+    margin: 14px 0;
+  }
+  .callout.info {
+    background: var(--info-bg);
+    color: #d7eef2;
+    border-left-color: var(--info-edge);
+  }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: end;
+    margin: 12px 0 14px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; min-width: 140px; }
+  .field label { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .field input, .field select, button, .btn {
+    font: inherit;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 11px;
+    background: #fff;
+    color: var(--ink);
+  }
+  button, .btn {
+    cursor: pointer;
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  button.secondary { background: #fff; color: var(--ink); }
+  button.accent { background: var(--accent); border-color: var(--accent); }
+  .table-shell {
+    border-radius: 12px;
+    overflow: auto;
+    border: 1px solid #0b0d10;
+    max-height: 70vh;
+    background: var(--table-bg);
+  }
+  table.layers {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1400px;
+    font-size: .86rem;
+  }
+  table.layers th {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--table-head);
+    color: #111;
+    text-align: left;
+    padding: 9px 8px;
+    border-bottom: 1px solid #b8c0c8;
+    white-space: nowrap;
+  }
+  table.layers td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #242a31;
+    color: var(--table-ink);
+    vertical-align: middle;
+  }
+  table.layers tr:hover td { background: #191e24; }
+  table.layers input[type="text"],
+  table.layers select {
+    width: 100%;
+    min-width: 90px;
+    background: #0c1014;
+    color: var(--table-ink);
+    border: 1px solid #333b45;
+    border-radius: 8px;
+    padding: 5px 7px;
+    font: inherit;
+  }
+  table.layers input[type="checkbox"] { transform: scale(1.1); }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 2px 9px;
+    font-size: .75rem;
+    border: 1px solid currentColor;
+    font-weight: 600;
+  }
+  .badge.A { color: #7dd3fc; }
+  .badge.B { color: #c4b5fd; }
+  .badge.C { color: #86efac; }
+  .badge.D { color: #fdba74; }
+  .swatch {
+    width: 14px; height: 14px; border-radius: 3px;
+    border: 1px solid rgba(255,255,255,.35);
+    display: inline-block; vertical-align: middle; margin-right: 6px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+    background: #fff;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 1rem; }
+  .card p, .card li { color: var(--muted); }
+  .color-swatch-lg {
+    width: 72px; height: 72px; border-radius: 12px;
+    border: 1px solid var(--line);
+    margin-bottom: 10px;
+  }
+  .lt-preview {
+    font-family: var(--mono);
+    letter-spacing: .08em;
+    color: #dbe4ec;
+    white-space: nowrap;
+  }
+  .gruppe {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 2px 10px;
+    border: 1px solid #4b7f76;
+    color: #b7e0d6;
+    font-size: .75rem;
+  }
+  .offen-list { margin: 0; padding-left: 1.1rem; }
+  .offen-list li { margin: 6px 0; }
+  .offen-tag {
+    display: inline-block;
+    background: #fff3e0;
+    color: #9a3412;
+    border: 1px solid #fdba74;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: .8rem;
+    font-weight: 700;
+  }
+  pre.master {
+    background: #0d1117;
+    color: #e6edf3;
+    border-radius: 12px;
+    padding: 16px;
+    overflow: auto;
+    font-size: .82rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  footer.note {
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: .9rem;
+    text-align: center;
+  }
+  .progress {
+    height: 8px; border-radius: 999px; background: #e5ebe7; overflow: hidden; margin-top: 8px;
+  }
+  .progress > i { display: block; height: 100%; background: var(--accent); width: 0%; }
+  @media (max-width: 700px) {
+    .hero { padding: 20px; }
+    section.block { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <h1>Kanalstandard – HTML Workshop</h1>
+    <p>Vollständige Informationsaufnahme als Arbeitsgrundlage für den Zeichner-Workshop. Kein fertiger Standard – offene Entscheidungen sind klar als <strong>OFFEN</strong> markiert. DIN 1356-1 nur ergänzende Orientierung.</p>
+    <div class="hero-meta">
+      <span class="chip">Kategorie A · Quellenlayer</span>
+      <span class="chip">Kategorie B · Bildsichtung</span>
+      <span class="chip">Kategorie C · Strukturvorschläge</span>
+      <span class="chip">Kategorie D · OFFEN</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Inhalt">
+    <a href="#workshop">Workshop-Tabelle</a>
+    <a href="#layer-manager">Layer-Manager</a>
+    <a href="#linientypen">Linientypkatalog</a>
+    <a href="#farben">Farbenkatalog</a>
+    <a href="#auffaelligkeiten">Auffälligkeiten</a>
+    <a href="#din">DIN 1356-1</a>
+    <a href="#master">Master-Prompt</a>
+    <a href="#offen">OFFEN</a>
+  </nav>
+
+  <section class="block" id="status">
+    <div class="sec-head">
+      <div class="num">1</div>
+      <div>
+        <h2>Aktueller Zustand</h2>
+        <p>Diese Datei dient als vollständige Grundlage, auf der die nächsten Anweisungen nacheinander umgesetzt werden können.</p>
+      </div>
+    </div>
+    <div class="callout info">Nächster Zustand: Diese Informationsaufnahme ist bewusst noch kein fertiger Standard. Sie dient als vollständige Grundlage, auf der die nächsten Anweisungen nacheinander umgesetzt werden können.</div>
+    <div class="stats" id="top-stats"></div>
+    <p style="color:var(--muted);margin:0">Kanalstandard – vollständige Informationsaufnahme · quellenbezogene Layerliste · offene Entscheidungen klar gekennzeichnet · Plotstil-Workshop nur „Normal“ oder „vonLayer“</p>
+  </section>
+
+  <section class="block" id="workshop">
+    <div class="sec-head">
+      <div class="num">2</div>
+      <div>
+        <h2>Interaktiver Layer-Workshop</h2>
+        <p>Pro Zeile bearbeitbar: AutoCAD-Layername, Linientyp, Farbe, Maßstab, Plotstil (nur Normal / vonLayer). Fortschritt wird lokal gespeichert.</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="field"><label>Suche</label><input id="q" type="text" placeholder="Layername…" /></div>
+      <div class="field"><label>Kategorie</label>
+        <select id="kat">
+          <option value="ALL">Alle</option>
+          <option value="A">A · Quelle</option>
+          <option value="B">B · Bilder</option>
+          <option value="C">C · Vorschlag</option>
+        </select>
+      </div>
+      <div class="field"><label>Familie</label>
+        <select id="fam">
+          <option value="ALL">Alle</option>
+          <option value="BKAN">BKAN</option>
+          <option value="BVER">BVER</option>
+          <option value="KANPL">KANPL</option>
+          <option value="SONST">Sonstige</option>
+        </select>
+      </div>
+      <div class="field"><label>Globaler Maßstab</label>
+        <select id="globalScale">
+          <option value="">— nicht setzen —</option>
+          <option value="1:250">1:250</option>
+          <option value="1:500">1:500</option>
+        </select>
+      </div>
+      <button class="accent" id="btnApplyScale" type="button">Maßstab anwenden</button>
+      <button class="secondary" id="btnExport" type="button">CSV exportieren</button>
+      <button class="secondary" id="btnReset" type="button">Änderungen zurücksetzen</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><strong id="countVisible">0</strong><span>sichtbare Zeilen</span></div>
+      <div class="stat"><strong id="countEdited">0</strong><span>bearbeitete Zeilen</span>
+        <div class="progress"><i id="editBar"></i></div>
+      </div>
+      <div class="stat"><strong id="countOffen">0</strong><span>OFFEN-Punkte</span></div>
+    </div>
+    <div class="table-shell">
+      <table class="layers" id="layerTable">
+        <thead>
+          <tr>
+            <th>Kat.</th>
+            <th>Nr.</th>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Ein</th>
+            <th>Frieren</th>
+            <th>Sperre</th>
+            <th>Plot</th>
+            <th>Farbe</th>
+            <th>Linientyp</th>
+            <th>Linienstärke</th>
+            <th>Beschreibung</th>
+            <th>Transparenz</th>
+            <th>Frieren in neuen AF</th>
+            <th>Plotstil Quelle</th>
+            <th>Plotstil Workshop</th>
+            <th>Maßstab</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" id="layer-manager">
+    <div class="sec-head">
+      <div class="num">12</div>
+      <div>
+        <h2>Vollständiger Layer-Manager</h2>
+        <p>Sämtliche 66 Datensätze aus der XLSX-Datei, einschließlich unveränderter Schreibweisen und leerer Felder.</p>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><strong>42</strong><span>BKAN-Datensätze</span></div>
+      <div class="stat"><strong>22</strong><span>BVER-Datensätze</span></div>
+      <div class="stat"><strong>2</strong><span>sonstige Datensätze</span></div>
+    </div>
+    <div class="callout">Quellenplotstile (schwarz0.25, pink0.25, Farbe …) bleiben als Referenz erhalten. Im Workshop-Edit sind nur „Normal“ und „vonLayer“ zulässig.</div>
+  </section>
+
+  <section class="block" id="linientypen">
+    <div class="sec-head">
+      <div class="num">13</div>
+      <div>
+        <h2>Linientypkatalog</h2>
+        <p>Vollständige Aufnahme der zusätzlich bereitgestellten Linientypen einschließlich Darstellung und Beschreibung.</p>
+      </div>
+    </div>
+    <div class="stats" id="lt-stats"></div>
+    <div class="callout">Hinweis zur Darstellung: Die Zeichenfolgen in der Tabelle sind textuelle Annäherungen der sichtbaren AutoCAD-Vorschau. Für das tatsächliche Linienmuster sind die Original-Screenshots und die in AutoCAD geladenen Linientypdefinitionen maßgeblich.</div>
+    <div class="table-shell">
+      <table class="layers" id="ltTable">
+        <thead><tr><th>Linientyp</th><th>Darstellung</th><th>Beschreibung</th><th>Gruppe</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="callout info" id="lt-note" style="margin-top:14px"></div>
+  </section>
+
+  <section class="block" id="farben">
+    <div class="sec-head">
+      <div class="num">14</div>
+      <div>
+        <h2>Farbenkatalog – aktuell dokumentierter Farbwert</h2>
+        <p>Aufnahme der bereitgestellten AutoCAD-Farbauswahl-Screenshots.</p>
+      </div>
+    </div>
+    <div class="grid-2" id="colorCards"></div>
+    <div class="callout" style="margin-top:14px">Stand des Farbenkatalogs: Neu dokumentiert ist derzeit <strong>magenta</strong>. Weitere Farben werden später in derselben Struktur ergänzt (Indexfarbe, RGB/HSL, Zweck, zugeordnete Layer). Indexnummer im Screenshot nicht sichtbar → nicht ergänzt. True Color wird als RGB gespeichert (Picker zeigte HSL).</div>
+  </section>
+
+  <section class="block" id="auffaelligkeiten">
+    <div class="sec-head">
+      <div class="num">15</div>
+      <div>
+        <h2>Auffälligkeiten und bewusste Prüfpunkte</h2>
+        <p>Schreibweisen und Entscheidungen, die im Workshop bewusst geprüft werden sollen.</p>
+      </div>
+    </div>
+    <div class="grid-2" id="anomalyCards"></div>
+  </section>
+
+  <section class="block" id="din">
+    <div class="sec-head">
+      <div class="num">16</div>
+      <div>
+        <h2>Information #4 – Rolle der DIN 1356-1</h2>
+        <p>Ergänzung, nicht dominierende Grundlage.</p>
+      </div>
+    </div>
+    <p>Als Quelle wurde genannt: <strong>DIN 1356-1_2018 – Bauzeichnungen – Teil 1: Grundregeln der Darstellung.</strong> Nach ausdrücklicher Vorgabe soll sie im weiteren Verlauf nur als kleine Ergänzung bzw. Orientierung verwendet und nicht übergewichtet werden.</p>
+    <div class="callout">Die DIN-Datei war im aktuell verarbeiteten Uploadsatz nicht als eigenständige Datei verfügbar. Deshalb werden hier keine konkreten Norminhalte behauptet oder ergänzt. Aufgenommen wurde ausschließlich die vorgegebene Rolle der Norm.</div>
+  </section>
+
+  <section class="block" id="master">
+    <div class="sec-head">
+      <div class="num">17</div>
+      <div>
+        <h2>Wiederverwendbarer vollständiger Master-Prompt</h2>
+        <p>Kontext, Reihenfolge, Blocknamen, offene Punkte und Layer-Manager-Zeilen.</p>
+      </div>
+    </div>
+    <pre class="master" id="masterPrompt"></pre>
+  </section>
+
+  <section class="block" id="offen">
+    <div class="sec-head">
+      <div class="num">D</div>
+      <div>
+        <h2>Noch offene Grundsatzangaben</h2>
+        <p>Gemeinsam zu entscheiden – nichts davon ist final.</p>
+      </div>
+    </div>
+    <ul class="offen-list" id="offenList"></ul>
+    <div class="card" style="margin-top:14px">
+      <h3>Blocknamen aus den Quellen</h3>
+      <div class="grid-2" id="blockCards"></div>
+    </div>
+  </section>
+
+  <footer class="note">Workshop-B-N · Quellenbezogen · keine erfundenen Schriftgrößen, Designs oder Layernamen · Stand: Informationsaufnahme</footer>
+</div>
+
+<script>
+const DATA = {"layers": [{"nr": 1, "name": "BKAN_ANSCHLUSSLEITUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "161", "linientyp": "VERS_GAS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_ANSCHLUSSLEITUNG", "linientyp_edit": "VERS_GAS", "farbe_edit": "161"}, {"nr": 2, "name": "BKAN_DRUCKLEITUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "31", "linientyp": "ENTW_VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_DRUCKLEITUNG", "linientyp_edit": "ENTW_VORH_DRUCKLEIT", "farbe_edit": "31"}, {"nr": 3, "name": "BKAN_DRUCKLEITUNG_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "255,110,110", "linientyp": "ENTW_VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": ["True-color RGB triple"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_DRUCKLEITUNG_M", "linientyp_edit": "ENTW_VORH_DRUCKLEIT", "farbe_edit": "255,110,110"}, {"nr": 4, "name": "BKAN_DRUCKLEITUNG_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "5,115,180", "linientyp": "ENTW_VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": ["True-color RGB triple"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_DRUCKLEITUNG_R", "linientyp_edit": "ENTW_VORH_DRUCKLEIT", "farbe_edit": "5,115,180"}, {"nr": 5, "name": "BKAN_DRUCKLEITUNG_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "31", "linientyp": "ENTW_VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_DRUCKLEITUNG_S", "linientyp_edit": "ENTW_VORH_DRUCKLEIT", "farbe_edit": "31"}, {"nr": 6, "name": "BKAN_HAUSANSCHL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "200", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_HAUSANSCHL", "linientyp_edit": "Continuous", "farbe_edit": "200"}, {"nr": 7, "name": "BKAN_KANALACHSE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "130", "linientyp": "GP_ACHSE", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_KANALACHSE", "linientyp_edit": "GP_ACHSE", "farbe_edit": "130"}, {"nr": 8, "name": "BKAN_LINIE_DRAINAGE_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "120", "linientyp": "VERS_GAS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.5", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_LINIE_DRAINAGE_KANAL", "linientyp_edit": "VERS_GAS", "farbe_edit": "120"}, {"nr": 9, "name": "BKAN_LINIE_M_Haltung", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "magenta", "linientyp": "ENTW_MISCHWASSER", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.7", "notes": ["Name uses Haltung (vs KANAL pattern on R)", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_LINIE_M_Haltung", "linientyp_edit": "ENTW_MISCHWASSER", "farbe_edit": "magenta"}, {"nr": 10, "name": "BKAN_LINIE_PUMPLEITUNG_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "51", "linientyp": "ENTW_VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "Normal", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "Normal", "name_edit": "BKAN_LINIE_PUMPLEITUNG_KAN", "linientyp_edit": "ENTW_VORH_DRUCKLEIT", "farbe_edit": "51"}, {"nr": 11, "name": "BKAN_LINIE_R_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "140", "linientyp": "ENTW_REGENWASSER", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.7", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_LINIE_R_KANAL", "linientyp_edit": "ENTW_REGENWASSER", "farbe_edit": "140"}, {"nr": 12, "name": "BKAN_LINIE_S_Haltung", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "AUSGEZOGEN", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.7", "notes": ["Name uses Haltung (vs KANAL pattern on R)", "German Continuous synonym AUSGEZOGEN", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_LINIE_S_Haltung", "linientyp_edit": "AUSGEZOGEN", "farbe_edit": "rot"}, {"nr": 13, "name": "BKAN_LINIE_SAUGLEITUNG_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "31", "linientyp": "VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "grau0.5", "notes": ["Linientyp VORH_DRUCKLEIT vs ENTW_VORH_DRUCKLEIT used elsewhere"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_LINIE_SAUGLEITUNG_KAN", "linientyp_edit": "VORH_DRUCKLEIT", "farbe_edit": "31"}, {"nr": 14, "name": "BKAN_ROHRWANDUNG_M_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "131", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_ROHRWANDUNG_M_KAN", "linientyp_edit": "Continuous", "farbe_edit": "131"}, {"nr": 15, "name": "BKAN_ROHRWANDUNG_R_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "131", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_ROHRWANDUNG_R_KAN", "linientyp_edit": "Continuous", "farbe_edit": "131"}, {"nr": 16, "name": "BKAN_ROHRWANDUNG_S_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "41", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_ROHRWANDUNG_S_KAN", "linientyp_edit": "Continuous", "farbe_edit": "41"}, {"nr": 17, "name": "BKAN_SCHACHTBAUW_DRAINAGE_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "20", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTBAUW_DRAINAGE_KAN", "linientyp_edit": "Continuous", "farbe_edit": "20"}, {"nr": 18, "name": "BKAN_SCHACHTBAUW_M_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "20", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTBAUW_M_KAN", "linientyp_edit": "Continuous", "farbe_edit": "20"}, {"nr": 19, "name": "BKAN_SCHACHTBAUW_R_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "20", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTBAUW_R_KAN", "linientyp_edit": "Continuous", "farbe_edit": "20"}, {"nr": 20, "name": "BKAN_SCHACHTBAUW_S_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "11", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTBAUW_S_KAN", "linientyp_edit": "Continuous", "farbe_edit": "11"}, {"nr": 21, "name": "BKAN_SCHACHTNR_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "20", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTNR_DRAINAGE", "linientyp_edit": "Continuous", "farbe_edit": "20"}, {"nr": 22, "name": "BKAN_SCHACHTNR_M_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTNR_M_KAN", "linientyp_edit": "Continuous", "farbe_edit": "rot"}, {"nr": 23, "name": "BKAN_SCHACHTNR_R_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTNR_R_KAN", "linientyp_edit": "Continuous", "farbe_edit": "rot"}, {"nr": 24, "name": "BKAN_SCHACHTNR_S_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "30", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_SCHACHTNR_S_KAN", "linientyp_edit": "Continuous", "farbe_edit": "30"}, {"nr": 25, "name": "BKAN_STAUZIEL_WSP", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "5,190,250", "linientyp": "GP_GESTRICHELT 6_1", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "blau0.25", "notes": ["True-color RGB triple"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_STAUZIEL_WSP", "linientyp_edit": "GP_GESTRICHELT 6_1", "farbe_edit": "5,190,250"}, {"nr": 26, "name": "BKAN_STUTZEN_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "50", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "dunkelblau0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_STUTZEN_DRAINAGE", "linientyp_edit": "Continuous", "farbe_edit": "50"}, {"nr": 27, "name": "BKAN_STUTZEN_M_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "140", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_STUTZEN_M_KANAL", "linientyp_edit": "Continuous", "farbe_edit": "140"}, {"nr": 28, "name": "BKAN_STUTZEN_R_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "140", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_STUTZEN_R_KANAL", "linientyp_edit": "Continuous", "farbe_edit": "140"}, {"nr": 29, "name": "BKAN_STUTZEN_S_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "21", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_STUTZEN_S_KANAL", "linientyp_edit": "Continuous", "farbe_edit": "21"}, {"nr": 30, "name": "BKAN_TEXT_DECK_SOHLE_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "50", "linientyp": "VERS_GAS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "dunkelblau0.5", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DECK_SOHLE_DRAINAGE", "linientyp_edit": "VERS_GAS", "farbe_edit": "50"}, {"nr": 31, "name": "BKAN_TEXT_DECK_SOHLE_M_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "gelb", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DECK_SOHLE_M_KAN", "linientyp_edit": "Continuous", "farbe_edit": "gelb"}, {"nr": 32, "name": "BKAN_TEXT_DECK_SOHLE_R_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "gelb", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DECK_SOHLE_R_KAN", "linientyp_edit": "Continuous", "farbe_edit": "gelb"}, {"nr": 33, "name": "BKAN_TEXT_DECK_SOHLE_S_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "60", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DECK_SOHLE_S_KAN", "linientyp_edit": "Continuous", "farbe_edit": "60"}, {"nr": 34, "name": "BKAN_TEXT_DRUCKLEITUNG_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DRUCKLEITUNG_M", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 35, "name": "BKAN_TEXT_DRUCKLEITUNG_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DRUCKLEITUNG_R", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 36, "name": "BKAN_TEXT_DRUCKLEITUNG_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_DRUCKLEITUNG_S", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 37, "name": "BKAN_TEXT_HALTUNG_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "120", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_HALTUNG_DRAINAGE", "linientyp_edit": "Continuous", "farbe_edit": "120"}, {"nr": 38, "name": "BKAN_TEXT_HALTUNG_M_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_HALTUNG_M_KAN", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 39, "name": "BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "52", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_HALTUNG_PUMPLEITUNG_KAN", "linientyp_edit": "Continuous", "farbe_edit": "52"}, {"nr": 40, "name": "BKAN_TEXT_HALTUNG_R_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_HALTUNG_R_KAN", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 41, "name": "BKAN_TEXT_HALTUNG_S_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "10", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.35", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_HALTUNG_S_KAN", "linientyp_edit": "Continuous", "farbe_edit": "10"}, {"nr": 42, "name": "BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "255,240,225", "linientyp": "VORH_DRUCKLEIT", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "grau0.5", "notes": ["Linientyp VORH_DRUCKLEIT vs ENTW_VORH_DRUCKLEIT used elsewhere", "True-color RGB triple"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BKAN_TEXT_HALTUNG_SAUGLEITUNG_KAN", "linientyp_edit": "VORH_DRUCKLEIT", "farbe_edit": "255,240,225"}, {"nr": 43, "name": "BKAT_GEBÄUDE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "Normal", "notes": ["Contains umlaut in layer name", "Prefix BKAT (Kataster?) not BKAN", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "Normal", "name_edit": "BKAT_GEBÄUDE", "linientyp_edit": "Continuous", "farbe_edit": "rot"}, {"nr": 44, "name": "BLAL_GEBAEUDE_TRAFO", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "224", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "grau0.5", "notes": ["Prefix BLAL (not BKAN/BVER); GEBAEUDE AE vs BKAT_GEBÄUDE umlaut"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BLAL_GEBAEUDE_TRAFO", "linientyp_edit": "Continuous", "farbe_edit": "224"}, {"nr": 45, "name": "BVER_", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Incomplete layer name trailing underscore", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 46, "name": "BVER_AUSA", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "211", "linientyp": "VERS_TELEKOM", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "Normal", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "Normal", "name_edit": "BVER_AUSA", "linientyp_edit": "VERS_TELEKOM", "farbe_edit": "211"}, {"nr": 47, "name": "BVER_BELEUCHTUNGKABEL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "VERS_BELEUCHTUNG", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": ["Missing S: BELEUCHTUNGKABEL vs BELEUCHTUNGSKABEL_SCHUTZR", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_BELEUCHTUNGKABEL", "linientyp_edit": "VERS_BELEUCHTUNG", "farbe_edit": "rot"}, {"nr": 48, "name": "BVER_BELEUCHTUNGSKABEL_SCHUTZR", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "CONTINIOUS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Linientyp typo CONTINIOUS (vs Continuous)", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_BELEUCHTUNGSKABEL_SCHUTZR", "linientyp_edit": "CONTINIOUS", "farbe_edit": "weiß"}, {"nr": 49, "name": "BVER_BREITBAND", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "gelb", "linientyp": "CONTINIOUS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": true, "plotstil": "pink0.25", "notes": ["Linientyp typo CONTINIOUS (vs Continuous)", "Only layer with Frieren in neuen AF=True", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_BREITBAND", "linientyp_edit": "CONTINIOUS", "farbe_edit": "gelb"}, {"nr": 50, "name": "BVER_FERNMELDEKABEL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "40", "linientyp": "VERS_TELEKOM", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "mandarine0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_FERNMELDEKABEL", "linientyp_edit": "VERS_TELEKOM", "farbe_edit": "40"}, {"nr": 51, "name": "BVER_FERNWÄRME-RÜCK", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "30", "linientyp": "CONTINIOUS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "mittelgrün0.7", "notes": ["Linientyp typo CONTINIOUS (vs Continuous)", "Contains umlaut in layer name"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_FERNWÄRME-RÜCK", "linientyp_edit": "CONTINIOUS", "farbe_edit": "30"}, {"nr": 52, "name": "BVER_FERNWÄRME-VOR", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "20", "linientyp": "CONTINIOUS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Linientyp typo CONTINIOUS (vs Continuous)", "Contains umlaut in layer name"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_FERNWÄRME-VOR", "linientyp_edit": "CONTINIOUS", "farbe_edit": "20"}, {"nr": 53, "name": "BVER_GAS", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "grün", "linientyp": "VERS_GAS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "mittelgrün0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_GAS", "linientyp_edit": "VERS_GAS", "farbe_edit": "grün"}, {"nr": 54, "name": "BVER_GASHOCHDRUCKLEITUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "grün", "linientyp": "VERS_GAS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "mittelgrün0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_GASHOCHDRUCKLEITUNG", "linientyp_edit": "VERS_GAS", "farbe_edit": "grün"}, {"nr": 55, "name": "BVER_HOCHSPANNUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_HOCHSPANNUNG", "linientyp_edit": "Continuous", "farbe_edit": "rot"}, {"nr": 56, "name": "BVER_KABELKAN_SCHUTZR", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "weiß", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_KABELKAN_SCHUTZR", "linientyp_edit": "Continuous", "farbe_edit": "weiß"}, {"nr": 57, "name": "BVER_KORROSIONSSCHUTZ", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "35", "linientyp": "VERS_NIEDERSPANNUNG", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_KORROSIONSSCHUTZ", "linientyp_edit": "VERS_NIEDERSPANNUNG", "farbe_edit": "35"}, {"nr": 58, "name": "BVER_LEERROHR", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "31", "linientyp": "Continuous", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "schwarz0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_LEERROHR", "linientyp_edit": "Continuous", "farbe_edit": "31"}, {"nr": 59, "name": "BVER_LICHTWELLENLEITER", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "30", "linientyp": "VERS_TELEKOM", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "pink0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_LICHTWELLENLEITER", "linientyp_edit": "VERS_TELEKOM", "farbe_edit": "30"}, {"nr": 60, "name": "BVER_MITTELSPANNUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "VERS_MITTELSPANNUNG", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_MITTELSPANNUNG", "linientyp_edit": "VERS_MITTELSPANNUNG", "farbe_edit": "rot"}, {"nr": 61, "name": "BVER_NIEDERSPANNUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "VERS_NIEDERSPANNUNG", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_NIEDERSPANNUNG", "linientyp_edit": "VERS_NIEDERSPANNUNG", "farbe_edit": "rot"}, {"nr": 62, "name": "BVER_ROHRPOST", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "30", "linientyp": "CONTINIOUS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "Farbe", "notes": ["Linientyp typo CONTINIOUS (vs Continuous)", "Unusual Plotstil value Farbe"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_ROHRPOST", "linientyp_edit": "CONTINIOUS", "farbe_edit": "30"}, {"nr": 63, "name": "BVER_SIGNALKABEL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "rot", "linientyp": "CONTINIOUS", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": ["Linientyp typo CONTINIOUS (vs Continuous)", "Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_SIGNALKABEL", "linientyp_edit": "CONTINIOUS", "farbe_edit": "rot"}, {"nr": 64, "name": "BVER_STEUERKABEL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "30", "linientyp": "VERS_TELEKOM", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "rot0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_STEUERKABEL", "linientyp_edit": "VERS_TELEKOM", "farbe_edit": "30"}, {"nr": 65, "name": "BVER_TELEKOM", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "gelb", "linientyp": "VERS_TELEKOM", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "pink0.25", "notes": ["Named AutoCAD color"], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_TELEKOM", "linientyp_edit": "VERS_TELEKOM", "farbe_edit": "gelb"}, {"nr": 66, "name": "BVER_TRINKWASSER", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "134", "linientyp": "VERS_TRINKWASSER", "linienstärke": "ByLineWeightDefault", "beschreibung": null, "beschreibung_raw": "leer", "transparenz": 0, "frieren_neue_af": false, "plotstil": "mittelblau0.25", "notes": [], "kategorie": "A", "quelle": "Layer-Manager XLSX", "status": "Quelle", "massstab": "", "plotstil_workshop": "vonLayer", "name_edit": "BVER_TRINKWASSER", "linientyp_edit": "VERS_TRINKWASSER", "farbe_edit": "134"}, {"nr": 101, "name": "KANPL_KANALACHSE_DRAINAGE", "name_edit": "KANPL_KANALACHSE_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 102, "name": "KANPL_LINE_DRAINAGE_KANAL", "name_edit": "KANPL_LINE_DRAINAGE_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 103, "name": "KANPL_SCHACHTNR_DRAINAGE", "name_edit": "KANPL_SCHACHTNR_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 104, "name": "KANPL_TEXT_DECK_SOHLE_DRAINAGE", "name_edit": "KANPL_TEXT_DECK_SOHLE_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 105, "name": "KANPL_SCHACHTBAUWERK_DRAINAGE", "name_edit": "KANPL_SCHACHTBAUWERK_DRAINAGE", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 106, "name": "KANPL_KANALACHSE_R", "name_edit": "KANPL_KANALACHSE_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 107, "name": "KANPL_Linie_R_KANAL", "name_edit": "KANPL_Linie_R_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 108, "name": "KANPL_ROHRWANDUNG_R", "name_edit": "KANPL_ROHRWANDUNG_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 109, "name": "KANPL_SCHACHTNR_R", "name_edit": "KANPL_SCHACHTNR_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 110, "name": "KANPL_TEXT_DECK_SOHLE_R", "name_edit": "KANPL_TEXT_DECK_SOHLE_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 111, "name": "KANPL_SCHACHTBAUWERK_R", "name_edit": "KANPL_SCHACHTBAUWERK_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 112, "name": "KANPL_KANALACHSE_M", "name_edit": "KANPL_KANALACHSE_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 113, "name": "KANPL_LINIE_M_KANAL", "name_edit": "KANPL_LINIE_M_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 114, "name": "KANPL_ROHRWANDUNG_M", "name_edit": "KANPL_ROHRWANDUNG_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 115, "name": "KANPL_SCHACHTNR_M", "name_edit": "KANPL_SCHACHTNR_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 116, "name": "KANPL_TEXT_DECK_SOHLE_M", "name_edit": "KANPL_TEXT_DECK_SOHLE_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 117, "name": "KANPL_SCHACHTBAUWERK_M", "name_edit": "KANPL_SCHACHTBAUWERK_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 118, "name": "KANPL_KANALACHSE_S", "name_edit": "KANPL_KANALACHSE_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 119, "name": "KANPL_LINIE_S_KANAL", "name_edit": "KANPL_LINIE_S_KANAL", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 120, "name": "KANPL_ROHRWANDUNG_S", "name_edit": "KANPL_ROHRWANDUNG_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 121, "name": "KANPL_SCHACHTNR_S", "name_edit": "KANPL_SCHACHTNR_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 122, "name": "KANPL_TEXT_DECK_SOHLE_S", "name_edit": "KANPL_TEXT_DECK_SOHLE_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 123, "name": "KANPL_SCHACHTBAUWERK_S", "name_edit": "KANPL_SCHACHTBAUWERK_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 124, "name": "KANPL_DRUCKLEITUNG", "name_edit": "KANPL_DRUCKLEITUNG", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 125, "name": "KANPL_DRUCKLEITUNG_M", "name_edit": "KANPL_DRUCKLEITUNG_M", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 126, "name": "KANPL_DRUCKLEITUNG_S", "name_edit": "KANPL_DRUCKLEITUNG_S", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 127, "name": "KANPL_DRUCKLEITUNG_R", "name_edit": "KANPL_DRUCKLEITUNG_R", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 128, "name": "KANPL_LINIE_SAUGLEITUNG_KAN", "name_edit": "KANPL_LINIE_SAUGLEITUNG_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 129, "name": "KANPL_LINIE_PUMPLEITUNG_KAN", "name_edit": "KANPL_LINIE_PUMPLEITUNG_KAN", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "beschreibung": "", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "kategorie": "B", "quelle": "CAD-Abbildungen (sichtbar)", "status": "Bildsichtung", "massstab": ""}, {"nr": 201, "name": "STRUKTUR_RW_Regenwasser", "name_edit": "STRUKTUR_RW_Regenwasser", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Kanalart RW – Strukturvorschlag", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": ""}, {"nr": 202, "name": "STRUKTUR_SW_Schmutzwasser", "name_edit": "STRUKTUR_SW_Schmutzwasser", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Kanalart SW – Strukturvorschlag", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": ""}, {"nr": 203, "name": "STRUKTUR_MW_Mischwasser", "name_edit": "STRUKTUR_MW_Mischwasser", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Kanalart MW – Strukturvorschlag", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": ""}, {"nr": 204, "name": "STRUKTUR_Drainage", "name_edit": "STRUKTUR_Drainage", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Sonderform Drainage", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": ""}, {"nr": 205, "name": "STRUKTUR_Druck_Saug_Pump", "name_edit": "STRUKTUR_Druck_Saug_Pump", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Druck-/Saug-/Pumpleitung als Objektfamilie", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": ""}, {"nr": 206, "name": "STRUKTUR_Anschluss_Hausanschluss", "name_edit": "STRUKTUR_Anschluss_Hausanschluss", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Anschlussleitung / Hausanschluss", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": ""}, {"nr": 207, "name": "STRUKTUR_Massstab_1_250", "name_edit": "STRUKTUR_Massstab_1_250", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Festlegungen getrennt für Maßstab 1:250", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": "1:250"}, {"nr": 208, "name": "STRUKTUR_Massstab_1_500", "name_edit": "STRUKTUR_Massstab_1_500", "kategorie": "C", "quelle": "Workshop-Vorschlag", "status": "Vorschlag", "beschreibung": "Festlegungen getrennt für Maßstab 1:500", "ein": true, "frieren": false, "sperre": false, "plot": true, "farbe": "", "farbe_edit": "", "linientyp": "", "linientyp_edit": "", "linienstärke": "ByLineWeightDefault", "transparenz": 0, "frieren_neue_af": false, "plotstil": "", "plotstil_workshop": "vonLayer", "massstab": "1:500"}], "offen": ["Klassisches Design im Bestand = OFFEN", "Klassisches Design in der Planung = OFFEN", "Schriftgrößen für 1:250 = OFFEN", "Schriftgrößen für 1:500 = OFFEN", "Endgültige Textinhalte, Textreihenfolge und Pflichtfelder = OFFEN", "Entscheidung Standarddarstellung oder nach R/M/S differenzierte Darstellung = OFFEN", "Verbindliche Normalisierung inkonsistenter Layernamen = OFFEN"], "anomalies": [{"id": 1, "title": "LINIE vs LINE", "text": "BKAN_LINIE_DRAINAGE_KANAL im Layer-Manager; in manchen Bildern BKAN_LINE_DRAINAGE_KANAL / KANPL_LINE_DRAINAGE_KANAL."}, {"id": 2, "title": "Gemischte Endungen Haltung/KANAL", "text": "BKAN_LINIE_M_Haltung, BKAN_LINIE_S_Haltung gegenüber anderen Layern mit _KANAL."}, {"id": 3, "title": "Schreibweisen in Planung", "text": "KANPL_LINE_..., KANPL_Linie_..., KANPL_LINIE_... gemischt."}, {"id": 4, "title": "CONTINIOUS", "text": "Schreibweise CONTINIOUS in mehreren BVER-Linientypen; gegen Continuous/CONTINUOUS prüfen."}, {"id": 5, "title": "Beleuchtung(s)kabel", "text": "BVER_BELEUCHTUNGKABEL ohne Fugen-s; BVER_BELEUCHTUNGSKABEL_SCHUTZR mit s."}, {"id": 6, "title": "SCHACHTBAUW vs SCHACHTBAUWERK", "text": "Bestandsdaten kürzen mit SCHACHTBAUW; Planungsbilder nutzen SCHACHTBAUWERK."}, {"id": 7, "title": "Plotstile Normal/Farbe/leer", "text": "Quellenplotstile enthalten Normal, Farbe und benannte Stile; Workshop-Edit nur Normal oder vonLayer."}, {"id": 8, "title": "Farben: Arbeitsfarbe vs verbindlich", "text": "Entscheidung offen, ob Bildschirmfarben nur Arbeitsfarben oder verbindliche Darstellungsnorm sind."}, {"id": 9, "title": "CONTINIOUS und Continuous parallel", "text": "Im Linientypkatalog bewusst unverändert belassen bis zur Klärung."}, {"id": 10, "title": "M500 / M1000 Varianten", "text": "Getrennte Linientyp-Einträge; unklar ob maßstabsautomatisch oder manuell."}, {"id": 11, "title": "Farbenkatalog Stand", "text": "Aktuell dokumentiert: magenta, RGB 255,0,255 / HSL 300·100·50. Katalog wird erweitert."}], "linetypes": [{"name": "Continuous", "darstellung": "————————", "beschreibung": "Durchgezogen (Continuous)", "gruppe": "Sonstige"}, {"name": "CONTINIOUS", "darstellung": "————————", "beschreibung": "Schreibweise aus Quelle bewusst unverändert", "gruppe": "Sonstige"}, {"name": "AUSGEZOGEN", "darstellung": "————————", "beschreibung": "Durchgezogen (deutsche Bezeichnung)", "gruppe": "Sonstige"}, {"name": "GP_ACHSE", "darstellung": "— · — · — · —", "beschreibung": "Achsenlinientyp GP", "gruppe": "GP"}, {"name": "GP_GESTRICHELT 6_1", "darstellung": "— — — — —", "beschreibung": "Gestrichelt 6_1 (Leerzeichen im Namen bewahrt)", "gruppe": "GP"}, {"name": "ENTW_MISCHWASSER", "darstellung": "— ·· — ·· —", "beschreibung": "Entwurf Mischwasser", "gruppe": "ENTW"}, {"name": "ENTW_REGENWASSER", "darstellung": "— · — · — ·", "beschreibung": "Entwurf Regenwasser", "gruppe": "ENTW"}, {"name": "ENTW_VORH_DRUCKLEIT", "darstellung": "— ··· — ··· —", "beschreibung": "Vorhandene Druckleitung (ENTW)", "gruppe": "ENTW"}, {"name": "VORH_DRUCKLEIT", "darstellung": "— ··· — ··· —", "beschreibung": "Vorhandene Druckleitung", "gruppe": "Sonstige"}, {"name": "VERS_GAS", "darstellung": "— G — G — G —", "beschreibung": "Versorgung Gas", "gruppe": "VERS"}, {"name": "VERS_TELEKOM", "darstellung": "— T — T — T —", "beschreibung": "Versorgung Telekom", "gruppe": "VERS"}, {"name": "VERS_TELEKOM_M500", "darstellung": "— T — T — T —", "beschreibung": "Telekom Maßstabsvariante M500", "gruppe": "VERS"}, {"name": "VERS_BELEUCHTUNG", "darstellung": "— BEL — BEL —", "beschreibung": "Beleuchtungskabel", "gruppe": "VERS"}, {"name": "VERS_NIEDERSPANNUNG", "darstellung": "— · — · — ·", "beschreibung": "Niederspannung", "gruppe": "VERS"}, {"name": "VERS_MITTELSPANNUNG", "darstellung": "— ·· — ·· —", "beschreibung": "Mittelspannung", "gruppe": "VERS"}, {"name": "VERS_TRINKWASSER", "darstellung": "— · — · — ·", "beschreibung": "Trinkwasser", "gruppe": "VERS"}, {"name": "ZAUN", "darstellung": "— v — v — v —", "beschreibung": "Zaun", "gruppe": "ZAUN"}, {"name": "ZAUN_100", "darstellung": "— V — V — V —", "beschreibung": "Zaun 100", "gruppe": "ZAUN"}, {"name": "ZAUN_200", "darstellung": "— — — — —", "beschreibung": "Zaun 200", "gruppe": "ZAUN"}, {"name": "ENTW_Entfaellt_GP_GESTRICHELT_6_1", "darstellung": "— — — — —", "beschreibung": "Bewusst unverändert aufgenommene Bezeichnung", "gruppe": "ENTW"}, {"name": "LEV_Mittelspannung_Fernheizung", "darstellung": "— ··· — ··· —", "beschreibung": "LEV Mittelspannung/Fernheizung – Schreibweise bewahrt", "gruppe": "LEV"}], "linetype_note": "In den Original-Screenshots des Linientyp-Managers wurden 87 Linientypen vollständig aufgenommen. Hier sind die aus Layern und Bildtexten sicher benannten Einträge gelistet; fehlende Namenszeilen bleiben OFFEN bis zur Einbettung der Originalbilder 125–127.", "linetype_stats": {"recorded": 87, "named_here": 21, "screenshots": 3}, "colors": [{"mode": "Indexfarbe", "bezeichnung": "magenta", "rgb": "255,0,255", "hsl": "Farbton 300 · Sättigung 100 · Helligkeit 50", "hex": "#FF00FF", "note": "Aktuell dokumentierter Farbwert aus AutoCAD-Screenshots 128/129"}], "blocks": {"Planung": ["PFahneMisch", "PFahneRegen", "PFahneSchmutz", "PfeilBlock"], "Bestand": ["BFahneMisch", "BFahneRegen", "BFahneSchmutz"]}, "stats": {"bkan": 42, "bver": 22, "sonstige": 2, "total_a": 66, "total_b": 29, "total_c": 8}, "unique_linientypen": ["AUSGEZOGEN", "CONTINIOUS", "Continuous", "ENTW_MISCHWASSER", "ENTW_REGENWASSER", "ENTW_VORH_DRUCKLEIT", "GP_ACHSE", "GP_GESTRICHELT 6_1", "VERS_BELEUCHTUNG", "VERS_GAS", "VERS_MITTELSPANNUNG", "VERS_NIEDERSPANNUNG", "VERS_TELEKOM", "VERS_TRINKWASSER", "VORH_DRUCKLEIT"], "unique_farben": ["10", "11", "120", "130", "131", "134", "140", "161", "20", "200", "21", "211", "224", "255,110,110", "255,240,225", "30", "31", "35", "40", "41", "5,115,180", "5,190,250", "50", "51", "52", "60", "gelb", "grün", "magenta", "rot", "weiß"], "unique_plotstile": ["Farbe", "Normal", "blau0.25", "dunkelblau0.25", "dunkelblau0.5", "grau0.5", "mandarine0.25", "mittelblau0.25", "mittelgrün0.25", "mittelgrün0.7", "pink0.25", "rot0.25", "schwarz0.25", "schwarz0.35", "schwarz0.5", "schwarz0.7"]};
+const STORAGE_KEY = 'kanalstandard-workshop-v1';
+
+const ACI = {
+  1:'#FF0000',2:'#FFFF00',3:'#00FF00',4:'#00FFFF',5:'#0000FF',6:'#FF00FF',7:'#FFFFFF',
+  10:'#FF0000',11:'#FF7F7F',20:'#FF7F00',21:'#FFA07A',30:'#FF7F00',31:'#FFAA55',
+  35:'#FFAA00',40:'#FFFF00',41:'#FFFF99',50:'#7FFF00',51:'#AADD55',52:'#BBFF66',
+  60:'#00FF00',120:'#00FF7F',130:'#00FFFF',131:'#7FFFFF',134:'#55AADD',140:'#007FFF',
+  161:'#7F7FFF',200:'#FF00FF',211:'#FF7FFF',224:'#A0A0A0'
+};
+const NAMED = {
+  rot:'#FF0000', gelb:'#FFFF00', grün:'#00FF00', gruen:'#00FF00',
+  weiß:'#FFFFFF', weiss:'#FFFFFF', magenta:'#FF00FF', blau:'#0000FF'
+};
+
+function colorCss(v){
+  if(!v) return '#333';
+  const s = String(v).trim();
+  if(NAMED[s.toLowerCase()]) return NAMED[s.toLowerCase()];
+  if(/^\d+,\d+,\d+$/.test(s)) return 'rgb('+s+')';
+  if(/^\d+$/.test(s) && ACI[+s]) return ACI[+s];
+  return '#666';
+}
+
+function familyOf(name){
+  if(name.startsWith('BKAN_')) return 'BKAN';
+  if(name.startsWith('BVER')) return 'BVER';
+  if(name.startsWith('KANPL_')) return 'KANPL';
+  return 'SONST';
+}
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let rows = DATA.layers.map(r => ({...r}));
+const state = loadState();
+rows.forEach(r => {
+  const s = state[r.nr];
+  if(!s) return;
+  Object.assign(r, {
+    name_edit: s.name_edit ?? r.name_edit,
+    farbe_edit: s.farbe_edit ?? r.farbe_edit,
+    linientyp_edit: s.linientyp_edit ?? r.linientyp_edit,
+    plotstil_workshop: s.plotstil_workshop ?? r.plotstil_workshop,
+    massstab: s.massstab ?? r.massstab,
+    ein: s.ein ?? r.ein,
+    frieren: s.frieren ?? r.frieren,
+    sperre: s.sperre ?? r.sperre,
+    plot: s.plot ?? r.plot,
+  });
+});
+
+const linientypOptions = Array.from(new Set([
+  ...DATA.unique_linientypen,
+  ...DATA.linetypes.map(l => l.name),
+  ''
+])).sort((a,b)=>a.localeCompare(b,'de'));
+
+const farbeOptions = Array.from(new Set([...DATA.unique_farben, 'magenta', ''])).sort((a,b)=>String(a).localeCompare(String(b),'de'));
+
+function persistRow(r){
+  const st = loadState();
+  st[r.nr] = {
+    name_edit: r.name_edit,
+    farbe_edit: r.farbe_edit,
+    linientyp_edit: r.linientyp_edit,
+    plotstil_workshop: r.plotstil_workshop,
+    massstab: r.massstab,
+    ein: r.ein, frieren: r.frieren, sperre: r.sperre, plot: r.plot
+  };
+  saveState(st);
+  updateCounts();
+}
+
+function isEdited(r){
+  return r.name_edit !== r.name
+    || r.farbe_edit !== (r.farbe||'')
+    || r.linientyp_edit !== (r.linientyp||'')
+    || (r.massstab||'') !== ''
+    || (r.kategorie==='A' && r.plotstil_workshop !== (r.plotstil==='Normal'?'Normal':'vonLayer'));
+}
+
+function updateCounts(){
+  const visible = document.querySelectorAll('#layerTable tbody tr').length;
+  const edited = rows.filter(isEdited).length;
+  document.getElementById('countVisible').textContent = visible;
+  document.getElementById('countEdited').textContent = edited;
+  document.getElementById('countOffen').textContent = DATA.offen.length;
+  const pct = rows.length ? Math.round(edited/rows.length*100) : 0;
+  document.getElementById('editBar').style.width = pct + '%';
+}
+
+function renderTopStats(){
+  const s = DATA.stats;
+  document.getElementById('top-stats').innerHTML = `
+    <div class="stat"><strong>${s.total_a}</strong><span>Kategorie A (XLSX)</span></div>
+    <div class="stat"><strong>${s.total_b}</strong><span>Kategorie B (Bilder)</span></div>
+    <div class="stat"><strong>${s.total_c}</strong><span>Kategorie C (Struktur)</span></div>
+    <div class="stat"><strong>${DATA.offen.length}</strong><span>OFFEN-Punkte</span></div>`;
+}
+
+function filteredRows(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const kat = document.getElementById('kat').value;
+  const fam = document.getElementById('fam').value;
+  return rows.filter(r => {
+    if(kat !== 'ALL' && r.kategorie !== kat) return false;
+    if(fam !== 'ALL' && familyOf(r.name) !== fam) return false;
+    if(q && !(r.name_edit||'').toLowerCase().includes(q) && !(r.name||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function renderTable(){
+  const tb = document.querySelector('#layerTable tbody');
+  const list = filteredRows();
+  tb.innerHTML = list.map(r => {
+    const ltOpts = linientypOptions.map(o => `<option value="${esc(o)}" ${o===r.linientyp_edit?'selected':''}>${esc(o||'—')}</option>`).join('');
+    const fOpts = farbeOptions.map(o => `<option value="${esc(o)}" ${String(o)===String(r.farbe_edit)?'selected':''}>${esc(o||'—')}</option>`).join('');
+    return `<tr data-nr="${r.nr}">
+      <td><span class="badge ${r.kategorie}">${r.kategorie}</span></td>
+      <td>${r.nr}</td>
+      <td>${esc(r.status||'')}</td>
+      <td><input type="text" data-k="name_edit" value="${esc(r.name_edit)}" /></td>
+      <td><input type="checkbox" data-k="ein" ${r.ein?'checked':''} /></td>
+      <td><input type="checkbox" data-k="frieren" ${r.frieren?'checked':''} /></td>
+      <td><input type="checkbox" data-k="sperre" ${r.sperre?'checked':''} /></td>
+      <td><input type="checkbox" data-k="plot" ${r.plot?'checked':''} /></td>
+      <td><span class="swatch" style="background:${colorCss(r.farbe_edit)}"></span>
+        <select data-k="farbe_edit">${fOpts}</select></td>
+      <td><select data-k="linientyp_edit">${ltOpts}</select></td>
+      <td>${esc(r.linienstärke||'')}</td>
+      <td>${esc(r.beschreibung||'—')}</td>
+      <td>${r.transparenz ?? 0}</td>
+      <td>${r.frieren_neue_af ? 'Ja' : 'Nein'}</td>
+      <td>${esc(r.plotstil||'—')}</td>
+      <td><select data-k="plotstil_workshop">
+        <option value="Normal" ${r.plotstil_workshop==='Normal'?'selected':''}>Normal</option>
+        <option value="vonLayer" ${r.plotstil_workshop==='vonLayer'?'selected':''}>vonLayer</option>
+      </select></td>
+      <td><select data-k="massstab">
+        <option value="" ${!r.massstab?'selected':''}>—</option>
+        <option value="1:250" ${r.massstab==='1:250'?'selected':''}>1:250</option>
+        <option value="1:500" ${r.massstab==='1:500'?'selected':''}>1:500</option>
+      </select></td>
+    </tr>`;
+  }).join('');
+  updateCounts();
+}
+
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function bindTable(){
+  const tb = document.querySelector('#layerTable tbody');
+  tb.addEventListener('change', e => {
+    const tr = e.target.closest('tr');
+    if(!tr) return;
+    const nr = +tr.dataset.nr;
+    const r = rows.find(x => x.nr === nr);
+    if(!r) return;
+    const k = e.target.dataset.k;
+    if(!k) return;
+    if(e.target.type === 'checkbox') r[k] = e.target.checked;
+    else r[k] = e.target.value;
+    if(k === 'farbe_edit'){
+      const sw = tr.querySelector('.swatch');
+      if(sw) sw.style.background = colorCss(r.farbe_edit);
+    }
+    persistRow(r);
+  });
+  tb.addEventListener('input', e => {
+    if(e.target.dataset.k !== 'name_edit') return;
+    const tr = e.target.closest('tr');
+    const r = rows.find(x => x.nr === +tr.dataset.nr);
+    if(!r) return;
+    r.name_edit = e.target.value;
+    persistRow(r);
+  });
+}
+
+function renderLinetypes(){
+  document.getElementById('lt-stats').innerHTML = `
+    <div class="stat"><strong>${DATA.linetype_stats.recorded}</strong><span>Linientypen vollständig aufgenommen</span></div>
+    <div class="stat"><strong>${DATA.linetype_stats.screenshots}</strong><span>Original-Screenshots des Linientyp-Managers</span></div>
+    <div class="stat"><strong>1:1</strong><span>Schreibweisen aus der Vorlage bewahrt</span></div>
+    <div class="stat"><strong>${DATA.linetype_stats.named_here}</strong><span>hier namentlich gelistet</span></div>`;
+  document.getElementById('lt-note').textContent = DATA.linetype_note;
+  document.querySelector('#ltTable tbody').innerHTML = DATA.linetypes.map(l => `
+    <tr>
+      <td>${esc(l.name)}</td>
+      <td class="lt-preview">${esc(l.darstellung)}</td>
+      <td>${esc(l.beschreibung)}</td>
+      <td><span class="gruppe">${esc(l.gruppe)}</span></td>
+    </tr>`).join('');
+}
+
+function renderColors(){
+  document.getElementById('colorCards').innerHTML = DATA.colors.map(c => `
+    <div class="card">
+      <div class="color-swatch-lg" style="background:${c.hex}"></div>
+      <h3>${esc(c.mode)}</h3>
+      <p><strong>Bezeichnung:</strong> ${esc(c.bezeichnung)}<br/>
+      <strong>RGB:</strong> ${esc(c.rgb)}<br/>
+      <strong>HSL:</strong> ${esc(c.hsl)}<br/>
+      <strong>Hex:</strong> ${esc(c.hex)}</p>
+      <p>${esc(c.note)}</p>
+    </div>
+    <div class="card">
+      <div class="color-swatch-lg" style="background:${c.hex}"></div>
+      <h3>True Color</h3>
+      <p>RGB: ${esc(c.rgb)}<br/>HSL: ${esc(c.hsl)}</p>
+      <p>Farbmodell im Screenshot: HSL · gespeichert als RGB.</p>
+    </div>`).join('');
+}
+
+function renderAnomalies(){
+  document.getElementById('anomalyCards').innerHTML = DATA.anomalies.map(a => `
+    <div class="card">
+      <h3>${a.id}. ${esc(a.title)} <span class="offen-tag">PRÜFEN</span></h3>
+      <p>${esc(a.text)}</p>
+    </div>`).join('');
+}
+
+function renderOffen(){
+  document.getElementById('offenList').innerHTML = DATA.offen.map(o => `<li><span class="offen-tag">OFFEN</span> ${esc(o)}</li>`).join('');
+  document.getElementById('blockCards').innerHTML = Object.entries(DATA.blocks).map(([k,v]) => `
+    <div><strong>${esc(k)}</strong><p>${v.map(esc).join(', ')}</p></div>`).join('');
+}
+
+function renderMaster(){
+  document.getElementById('masterPrompt').textContent = `MASTER-PROMPT: KANALSTANDARD / WORKSHOP-VORBEREITUNG
+
+ROLLE UND ARBEITSMODUS
+Du unterstützt bei der schrittweisen Entwicklung und Verfestigung eines gemeinsamen CAD-/Zeichnerstandards für Kanal- und später Versorgungspläne. Arbeite streng quellenbezogen mit den hier aufgenommenen Informationen. Erfinde keine noch nicht festgelegten Schriftgrößen, Designs, Layer oder Darstellungsregeln. Kennzeichne fehlende Entscheidungen ausdrücklich als OFFEN. Die DIN 1356-1 ist nur eine ergänzende Orientierung und darf die gemeinsam zu entwickelnde betriebliche Lösung nicht dominieren.
+
+ZIEL UND REIHENFOLGE
+1. Zuerst ausschließlich Bestandskanal strukturieren.
+2. Kanalarten bestimmen: mindestens RW/Regenwasser, SW/Schmutzwasser, MW/Mischwasser; zusätzlich Drainage, Druckleitung, Saugleitung, Pumpleitung, Anschlussleitung und Hausanschluss.
+3. Für jedes Objekt Layer, Texte, Schacht-/Haltungsinformationen, Linien-/Signaturdarstellungen und Schriftgrößen definieren.
+4. Festlegungen getrennt für die Maßstäbe 1:250 und 1:500 treffen.
+5. Erster Abstimmungstermin ca. 20–30 Minuten → belastbare Struktur und Entscheidungslisten.
+6. Später dieselbe Systematik für die Kanalplanung.
+7. Danach Versorgungsleitungen / V-Leitungen.
+8. Bestätigte Ergebnisse schrittweise in eine gemeinsame Standard-DWG überführen.
+
+KATEGORIEN
+A) bereits quellenmäßig vorhanden
+B) aus den Bildern sichtbar
+C) vorgeschlagene Workshop-Struktur
+D) noch gemeinsam zu entscheiden
+
+BEREITGESTELLTE QUELLEN
+- Zehn originale CAD-Abbildungen image(108).png bis image(117).png
+- Kanal_Layereigenschaften_Layer-Manager.xlsx
+- 66 Layer-Manager-Zeilen vollständig aufgenommen
+- Linientypkatalog (87 Einträge laut Screenshots; namentlich bekannte hier gelistet)
+- Farbenkatalog: magenta RGB 255,0,255`;
+}
+
+function exportCsv(){
+  const headers = ['Status','Name','Ein','Frieren','Sperre','Plot','Farbe','Linientyp','Linienstärke','Beschreibung','Transparenz','Frieren in neuen Ansichtsfenstern','Plotstil','Kategorie','Maßstab','Plotstil Quelle'];
+  const lines = [headers.join(';')];
+  filteredRows().forEach(r => {
+    const vals = [
+      r.status,
+      r.name_edit,
+      r.ein?'True':'False',
+      r.frieren?'True':'False',
+      r.sperre?'True':'False',
+      r.plot?'True':'False',
+      r.farbe_edit,
+      r.linientyp_edit,
+      r.linienstärke||'ByLineWeightDefault',
+      r.beschreibung||'',
+      r.transparenz??0,
+      r.frieren_neue_af?'True':'False',
+      r.plotstil_workshop,
+      r.kategorie,
+      r.massstab||'',
+      r.plotstil||''
+    ].map(v => {
+      const s = String(v??'');
+      return /[;"\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+    });
+    lines.push(vals.join(';'));
+  });
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + lines.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Kanal_Layer_Workshop_Export.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('q').addEventListener('input', renderTable);
+document.getElementById('kat').addEventListener('change', renderTable);
+document.getElementById('fam').addEventListener('change', renderTable);
+document.getElementById('btnExport').addEventListener('click', exportCsv);
+document.getElementById('btnApplyScale').addEventListener('click', () => {
+  const sc = document.getElementById('globalScale').value;
+  if(!sc) return;
+  filteredRows().forEach(r => { r.massstab = sc; persistRow(r); });
+  renderTable();
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  if(!confirm('Lokale Workshop-Änderungen wirklich zurücksetzen?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+});
+
+renderTopStats();
+renderTable();
+bindTable();
+renderLinetypes();
+renderColors();
+renderAnomalies();
+renderOffen();
+renderMaster();
+updateCounts();
+</script>
+</body>
+</html>
